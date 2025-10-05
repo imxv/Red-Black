@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { type MouseEvent, type SVGProps, useEffect, useState } from "react";
 import { animate } from "animejs";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 
 type Merchant = {
@@ -22,7 +21,8 @@ type Merchant = {
   rating: number;
   scoreDelta: number;
   reviews: number;
-  topProduct: string;
+  likes: number;
+  dislikes: number;
   location: string;
   monthlyGrowth: number;
   responseTime: string;
@@ -38,7 +38,8 @@ const merchants: Merchant[] = [
     rating: 4.9,
     scoreDelta: 0.2,
     reviews: 1240,
-    topProduct: "限量签名本",
+    likes: 987,
+    dislikes: 32,
     location: "上海 · 徐汇",
     monthlyGrowth: 18,
     responseTime: "平均响应 1.8 小时",
@@ -51,7 +52,8 @@ const merchants: Merchant[] = [
     rating: 4.8,
     scoreDelta: 0.3,
     reviews: 980,
-    topProduct: "桂花冷萃",
+    likes: 864,
+    dislikes: 28,
     location: "杭州 · 西湖",
     monthlyGrowth: 22,
     responseTime: "平均响应 1.2 小时",
@@ -64,7 +66,8 @@ const merchants: Merchant[] = [
     rating: 4.7,
     scoreDelta: 0.1,
     reviews: 860,
-    topProduct: "炙烤三文鱼碗",
+    likes: 742,
+    dislikes: 36,
     location: "成都 · 锦江",
     monthlyGrowth: 16,
     responseTime: "平均响应 2.3 小时",
@@ -77,7 +80,8 @@ const merchants: Merchant[] = [
     rating: 4.6,
     scoreDelta: -0.1,
     reviews: 730,
-    topProduct: "炭焙乌龙",
+    likes: 612,
+    dislikes: 42,
     location: "广州 · 越秀",
     monthlyGrowth: 12,
     responseTime: "平均响应 3.1 小时",
@@ -90,7 +94,8 @@ const merchants: Merchant[] = [
     rating: 4.6,
     scoreDelta: 0.2,
     reviews: 690,
-    topProduct: "法式千层",
+    likes: 578,
+    dislikes: 25,
     location: "北京 · 朝阳",
     monthlyGrowth: 15,
     responseTime: "平均响应 1.9 小时",
@@ -103,7 +108,8 @@ const merchants: Merchant[] = [
     rating: 4.5,
     scoreDelta: -0.2,
     reviews: 540,
-    topProduct: "限定花束",
+    likes: 498,
+    dislikes: 31,
     location: "深圳 · 南山",
     monthlyGrowth: 9,
     responseTime: "平均响应 2.7 小时",
@@ -112,9 +118,159 @@ const merchants: Merchant[] = [
   },
 ];
 
+const mainServiceIcons = [
+  {
+    src: "https://img.icons8.com/?size=100&id=81399&format=png&color=000000",
+    alt: "主营图标1",
+  },
+  {
+    src: "https://img.icons8.com/?size=100&id=80622&format=png&color=000000",
+    alt: "主营图标2",
+  },
+  {
+    src: "https://img.icons8.com/?size=100&id=81123&format=png&color=000000",
+    alt: "主营图标3",
+  },
+  {
+    src: "https://img.icons8.com/?size=100&id=80754&format=png&color=000000",
+    alt: "主营图标4",
+  },
+];
+
+const TOTAL_STARS = 5;
+const MAX_MAIN_SERVICE_ICONS = 3;
+const mainServiceIconsToDisplay = mainServiceIcons.slice(0, MAX_MAIN_SERVICE_ICONS);
+const hasExtraMainServiceIcons = mainServiceIcons.length > MAX_MAIN_SERVICE_ICONS;
+
+type IconProps = SVGProps<SVGSVGElement>;
+
+function StarIcon({
+  className,
+  filled = false,
+}: {
+  className?: string;
+  filled?: boolean;
+}) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill={filled ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.98a1 1 0 00.95.69h4.19c.969 0 1.371 1.24.588 1.81l-3.392 2.466a1 1 0 00-.364 1.118l1.287 3.98c.3.922-.755 1.688-1.538 1.118l-3.392-2.466a1 1 0 00-1.176 0l-3.392 2.466c-.783.57-1.838-.196-1.539-1.118l1.287-3.98a1 1 0 00-.364-1.118L2.94 9.407c-.783-.57-.38-1.81.588-1.81h4.19a1 1 0 00.95-.69l1.286-3.98z" />
+    </svg>
+  );
+}
+
+function LikeIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.4}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M6 10.4v8.2" />
+      <path d="M8.5 18.6h7.22a2 2 0 001.93-1.46l1.12-4.08A1.5 1.5 0 0017.33 11h-3.98l.56-2.84a1.8 1.8 0 00-3.48-1.02l-1.93 3.26a2.9 2.9 0 01-.53.67l-.47.44" />
+      <path d="M6 10.4H4.3A2.3 2.3 0 002 12.7v3.18A2.3 2.3 0 004.3 18.2H6" />
+    </svg>
+  );
+}
+
+function DislikeIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.4}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M18 13.6V5.4" />
+      <path d="M15.5 5.4H8.28a2 2 0 00-1.93 1.46l-1.12 4.08A1.5 1.5 0 006.67 13h3.98l-.56 2.84a1.8 1.8 0 003.48 1.02l1.93-3.26c.15-.25.33-.47.53-.67l.47-.44" />
+      <path d="M18 13.6h1.7A2.3 2.3 0 0022 11.3V8.12A2.3 2.3 0 0019.7 5.8H18" />
+    </svg>
+  );
+}
+
+function ReviewIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M4 6.75A2.75 2.75 0 016.75 4h10.5A2.75 2.75 0 0120 6.75V13a2.75 2.75 0 01-2.75 2.75H12l-4 3.25V15.75H6.75A2.75 2.75 0 014 13V6.75z" />
+      <path d="M8.5 8.75h7" />
+      <path d="M8.5 12h4.5" />
+    </svg>
+  );
+}
+
+function RatingDisplay({ rating }: { rating: number }) {
+  const getFillForStar = (index: number) => {
+    const remainder = rating - index;
+
+    if (remainder >= 1) return 100;
+    if (remainder <= 0) return 0;
+
+    return remainder * 100;
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-3">
+        <span className="text-4xl font-semibold text-foreground">
+          {rating.toFixed(1)}
+        </span>
+        <div className="flex items-center gap-1">
+          {Array.from({ length: TOTAL_STARS }).map((_, index) => {
+            const fill = getFillForStar(index);
+
+            return (
+              <div key={index} className="relative h-4 w-4">
+                <StarIcon className="h-full w-full text-slate-700/60" />
+                {fill > 0 && (
+                  <div
+                    className="absolute inset-0 overflow-hidden"
+                    style={{ width: `${fill}%` }}
+                  >
+                    <StarIcon className="h-full w-full text-amber-400" filled />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <p className="text-xs uppercase tracking-wide text-muted-foreground">综合评分</p>
+    </div>
+  );
+}
+
 export default function Home() {
+  const [merchantData, setMerchantData] = useState(() =>
+    merchants.map((merchant) => ({ ...merchant })),
+  );
+
   useEffect(() => {
-    const animation = animate(".merchant-card", {
+    const cardAnimation = animate(".merchant-card", {
       opacity: [0, 1],
       translateY: [24, 0],
       delay: (_el, index) => index * 90,
@@ -123,26 +279,55 @@ export default function Home() {
     });
 
     return () => {
-      animation.pause();
+      cardAnimation.pause();
     };
   }, []);
+
+  const handleReaction = (
+    index: number,
+    field: "likes" | "dislikes",
+  ) => (event: MouseEvent<HTMLButtonElement>) => {
+    setMerchantData((previous) =>
+      previous.map((merchant, merchantIndex) =>
+        merchantIndex === index
+          ? { ...merchant, [field]: merchant[field] + 1 }
+          : merchant,
+      ),
+    );
+
+    animate(event.currentTarget, {
+      scale: [1, 1.12, 1],
+      duration: 280,
+      easing: "easeOutBack",
+    });
+
+    const iconElement = event.currentTarget.querySelector("svg");
+
+    if (iconElement) {
+      animate(iconElement, {
+        rotate: field === "likes" ? [0, -12, 0] : [0, 12, 0],
+        duration: 320,
+        easing: "easeOutQuad",
+      });
+    }
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)]">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(59,130,246,0.18),_transparent_55%)]" />
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-16 sm:px-6 lg:px-8">
         <header className="max-w-3xl space-y-4">
-          <Badge className="w-fit">城市商家榜</Badge>
+          <Badge className="w-fit">爬宠界的 “大众点评”</Badge>
           <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-            城市商家评分榜
+            爬宠商家红黑榜
           </h1>
           <p className="text-base text-muted-foreground">
-            精选本周评分最高的热门商家，通过一句话了解他们的优势、服务口碑与互动趋势。
+            玩家们自发组织的爬宠商家红黑榜，公平公正，旨在帮助大家选择更靠谱的优质商家，避雷黑心商家。
           </p>
         </header>
 
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {merchants.map((merchant) => (
+          {merchantData.map((merchant, index) => (
             <Card
               key={merchant.name}
               className={cn(
@@ -174,33 +359,63 @@ export default function Home() {
                 </div>
               </CardHeader>
 
-              <CardContent className="gap-6">
-                <div className="flex items-end justify-between gap-4">
-                  <div className="space-y-1">
-                    <span className="text-4xl font-semibold text-foreground">
-                      {merchant.rating.toFixed(1)}
-                    </span>
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">综合评分</p>
-                  </div>
-                  <div className="flex flex-1 flex-col gap-2">
-                    <Progress value={(merchant.rating / 5) * 100} />
-                    <span className="text-xs text-muted-foreground">
-                      {merchant.reviews} 条点评
-                    </span>
-                  </div>
-                </div>
+              <CardContent className="flex flex-col gap-6">
+                <RatingDisplay rating={merchant.rating} />
 
                 <div className="grid gap-4 text-sm text-foreground sm:grid-cols-2">
                   <div className="rounded-2xl border border-border/40 bg-white/[0.02] p-4 backdrop-blur">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">招牌推荐</p>
-                    <p className="mt-2 font-medium">{merchant.topProduct}</p>
-                  </div>
-                  <div className="rounded-2xl border border-border/40 bg-white/[0.02] p-4 backdrop-blur">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">月度互动</p>
-                    <p className="mt-2 font-medium">{merchant.monthlyGrowth}% 增长</p>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">主营</p>
+                    <div className="mt-3 flex items-center gap-1.5 overflow-hidden">
+                      {mainServiceIconsToDisplay.map((icon) => (
+                        <img
+                          key={icon.src}
+                          src={icon.src}
+                          alt={icon.alt}
+                          className="h-7 w-7 flex-shrink-0 object-contain"
+                          loading="lazy"
+                        />
+                      ))}
+                      {hasExtraMainServiceIcons && (
+                        <span className="flex-shrink-0 text-sm font-medium text-muted-foreground">
+                          ...
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </CardContent>
+              <CardFooter className="mt-2 border-t border-border/40 pt-4 text-sm text-muted-foreground">
+                <div className="flex w-full flex-wrap items-center justify-between gap-4">
+                  <button
+                    type="button"
+                    onClick={handleReaction(index, "likes")}
+                    className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-emerald-300/90 transition-colors hover:text-emerald-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                    aria-label={`${merchant.name} 点赞`}
+                  >
+                    <LikeIcon className="like-icon h-4 w-4" aria-hidden="true" />
+                    <span className="font-medium text-foreground">
+                      {merchant.likes.toLocaleString()}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleReaction(index, "dislikes")}
+                    className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-rose-300/90 transition-colors hover:text-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                    aria-label={`${merchant.name} 点踩`}
+                  >
+                    <DislikeIcon className="dislike-icon h-4 w-4" aria-hidden="true" />
+                    <span className="font-medium text-foreground">
+                      {merchant.dislikes.toLocaleString()}
+                    </span>
+                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <ReviewIcon className="h-4 w-4 text-sky-300/90" aria-hidden="true" />
+                    <span className="font-medium text-foreground">
+                      {merchant.reviews.toLocaleString()} 条
+                    </span>
+                  </div>
+                </div>
+              </CardFooter>
             </Card>
           ))}
         </div>

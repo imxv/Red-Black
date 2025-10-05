@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "城市商家评分榜",
+  title: "爬宠商家红黑榜",
   description: "实时追踪热门商家的用户评分、互动趋势与服务表现",
 };
 
