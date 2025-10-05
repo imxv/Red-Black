@@ -142,7 +142,7 @@ export default function Home() {
         </header>
 
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {merchants.map((merchant, index) => (
+          {merchants.map((merchant) => (
             <Card
               key={merchant.name}
               className={cn(
@@ -151,20 +151,6 @@ export default function Home() {
               )}
             >
               <CardHeader className="mb-6 flex flex-col gap-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-accent/20 text-sm font-semibold text-accent-foreground">
-                      #{index + 1}
-                    </span>
-                    <Badge variant="secondary">{merchant.category}</Badge>
-                  </div>
-                  <Badge variant={merchant.scoreDelta >= 0 ? "success" : "warning"}>
-                    {merchant.scoreDelta >= 0 ? "上升" : "波动"}{" "}
-                    {merchant.scoreDelta >= 0 ? "+" : ""}
-                    {merchant.scoreDelta.toFixed(1)}
-                  </Badge>
-                </div>
-
                 <div className="flex items-center gap-4">
                   <Avatar
                     className="h-14 w-14 text-lg"
@@ -215,11 +201,6 @@ export default function Home() {
                   </div>
                 </div>
               </CardContent>
-
-              <CardFooter className="mt-6 flex items-center justify-between text-xs text-muted-foreground">
-                <span>实时更新</span>
-                <span>{merchant.responseTime}</span>
-              </CardFooter>
             </Card>
           ))}
         </div>
