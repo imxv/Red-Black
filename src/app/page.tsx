@@ -1,7 +1,14 @@
 "use client";
 
-import { type MouseEvent, type SVGProps, useEffect, useState } from "react";
+import {
+  type KeyboardEvent,
+  type MouseEvent,
+  type SVGProps,
+  useEffect,
+  useState,
+} from "react";
 import { animate } from "animejs";
+import { useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -14,109 +21,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-
-type Merchant = {
-  name: string;
-  category: string;
-  rating: number;
-  scoreDelta: number;
-  reviews: number;
-  likes: number;
-  dislikes: number;
-  location: string;
-  monthlyGrowth: number;
-  responseTime: string;
-  avatarFallback: string;
-  avatarUrl?: string;
-  avatarColor: string;
-};
-
-const merchants: Merchant[] = [
-  {
-    name: "晨光书屋",
-    category: "精品书店",
-    rating: 4.9,
-    scoreDelta: 0.2,
-    reviews: 1240,
-    likes: 987,
-    dislikes: 32,
-    location: "上海 · 徐汇",
-    monthlyGrowth: 18,
-    responseTime: "平均响应 1.8 小时",
-    avatarFallback: "晨",
-    avatarColor: "#2563eb",
-  },
-  {
-    name: "南麓咖啡实验室",
-    category: "咖啡馆",
-    rating: 4.8,
-    scoreDelta: 0.3,
-    reviews: 980,
-    likes: 864,
-    dislikes: 28,
-    location: "杭州 · 西湖",
-    monthlyGrowth: 22,
-    responseTime: "平均响应 1.2 小时",
-    avatarFallback: "南",
-    avatarColor: "#0ea5e9",
-  },
-  {
-    name: "赤霞慢食",
-    category: "健康轻食",
-    rating: 4.7,
-    scoreDelta: 0.1,
-    reviews: 860,
-    likes: 742,
-    dislikes: 36,
-    location: "成都 · 锦江",
-    monthlyGrowth: 16,
-    responseTime: "平均响应 2.3 小时",
-    avatarFallback: "赤",
-    avatarColor: "#f97316",
-  },
-  {
-    name: "归一茶社",
-    category: "茶饮新式",
-    rating: 4.6,
-    scoreDelta: -0.1,
-    reviews: 730,
-    likes: 612,
-    dislikes: 42,
-    location: "广州 · 越秀",
-    monthlyGrowth: 12,
-    responseTime: "平均响应 3.1 小时",
-    avatarFallback: "归",
-    avatarColor: "#22d3ee",
-  },
-  {
-    name: "北岸甜品铺",
-    category: "甜品铺",
-    rating: 4.6,
-    scoreDelta: 0.2,
-    reviews: 690,
-    likes: 578,
-    dislikes: 25,
-    location: "北京 · 朝阳",
-    monthlyGrowth: 15,
-    responseTime: "平均响应 1.9 小时",
-    avatarFallback: "北",
-    avatarColor: "#ec4899",
-  },
-  {
-    name: "石花花坊",
-    category: "生活方式",
-    rating: 4.5,
-    scoreDelta: -0.2,
-    reviews: 540,
-    likes: 498,
-    dislikes: 31,
-    location: "深圳 · 南山",
-    monthlyGrowth: 9,
-    responseTime: "平均响应 2.7 小时",
-    avatarFallback: "石",
-    avatarColor: "#8b5cf6",
-  },
-];
+import { RatingDisplay } from "@/components/merchant/rating-display";
+import { merchants as merchantSource, type Merchant } from "@/data/merchants";
 
 const mainServiceIcons = [
   {
@@ -137,34 +43,11 @@ const mainServiceIcons = [
   },
 ];
 
-const TOTAL_STARS = 5;
 const MAX_MAIN_SERVICE_ICONS = 3;
 const mainServiceIconsToDisplay = mainServiceIcons.slice(0, MAX_MAIN_SERVICE_ICONS);
 const hasExtraMainServiceIcons = mainServiceIcons.length > MAX_MAIN_SERVICE_ICONS;
 
 type IconProps = SVGProps<SVGSVGElement>;
-
-function StarIcon({
-  className,
-  filled = false,
-}: {
-  className?: string;
-  filled?: boolean;
-}) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className={className}
-      fill={filled ? "currentColor" : "none"}
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.98a1 1 0 00.95.69h4.19c.969 0 1.371 1.24.588 1.81l-3.392 2.466a1 1 0 00-.364 1.118l1.287 3.98c.3.922-.755 1.688-1.538 1.118l-3.392-2.466a1 1 0 00-1.176 0l-3.392 2.466c-.783.57-1.838-.196-1.539-1.118l1.287-3.98a1 1 0 00-.364-1.118L2.94 9.407c-.783-.57-.38-1.81.588-1.81h4.19a1 1 0 00.95-.69l1.286-3.98z" />
-    </svg>
-  );
-}
 
 function LikeIcon({ className, ...props }: IconProps) {
   return (
@@ -223,50 +106,10 @@ function ReviewIcon({ className, ...props }: IconProps) {
   );
 }
 
-function RatingDisplay({ rating }: { rating: number }) {
-  const getFillForStar = (index: number) => {
-    const remainder = rating - index;
-
-    if (remainder >= 1) return 100;
-    if (remainder <= 0) return 0;
-
-    return remainder * 100;
-  };
-
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-3">
-        <span className="text-4xl font-semibold text-foreground">
-          {rating.toFixed(1)}
-        </span>
-        <div className="flex items-center gap-1">
-          {Array.from({ length: TOTAL_STARS }).map((_, index) => {
-            const fill = getFillForStar(index);
-
-            return (
-              <div key={index} className="relative h-4 w-4">
-                <StarIcon className="h-full w-full text-slate-700/60" />
-                {fill > 0 && (
-                  <div
-                    className="absolute inset-0 overflow-hidden"
-                    style={{ width: `${fill}%` }}
-                  >
-                    <StarIcon className="h-full w-full text-amber-400" filled />
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">综合评分</p>
-    </div>
-  );
-}
-
 export default function Home() {
-  const [merchantData, setMerchantData] = useState(() =>
-    merchants.map((merchant) => ({ ...merchant })),
+  const router = useRouter();
+  const [merchantData, setMerchantData] = useState<Merchant[]>(() =>
+    merchantSource.map((merchant) => ({ ...merchant })),
   );
 
   useEffect(() => {
@@ -287,6 +130,8 @@ export default function Home() {
     index: number,
     field: "likes" | "dislikes",
   ) => (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+
     setMerchantData((previous) =>
       previous.map((merchant, merchantIndex) =>
         merchantIndex === index
@@ -331,9 +176,18 @@ export default function Home() {
             <Card
               key={merchant.name}
               className={cn(
-                "merchant-card relative border-border/50 bg-slate-900/70 p-6 backdrop-blur-lg",
+                "merchant-card relative cursor-pointer border-border/50 bg-slate-900/70 p-6 backdrop-blur-lg",
                 "before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-gradient-to-br before:from-white/5 before:via-white/0 before:to-white/10",
               )}
+              role="button"
+              tabIndex={0}
+              onClick={() => router.push(`/merchants/${merchant.slug}`)}
+              onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  router.push(`/merchants/${merchant.slug}`);
+                }
+              }}
             >
               <CardHeader className="mb-6 flex flex-col gap-6">
                 <div className="flex items-center gap-4">

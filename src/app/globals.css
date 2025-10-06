@@ -26,3 +26,100 @@
     @apply bg-background text-foreground min-h-screen font-sans antialiased;
   }
 }
+
+@layer components {
+  .rating {
+    --rating-size: 1.75rem;
+    --rating-active: rgb(251 191 36 / 1);
+    --rating-hover: rgb(252 211 77 / 1);
+    --rating-inactive: rgb(148 163 184 / 0.45);
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .rating input {
+    appearance: none;
+    margin: 0;
+  }
+
+  .rating .rating-hidden {
+    width: 0;
+    height: 0;
+    padding: 0;
+    opacity: 0;
+  }
+
+  .rating .mask {
+    position: relative;
+    width: var(--rating-size);
+    height: var(--rating-size);
+    cursor: pointer;
+    background-color: var(--rating-active);
+    -webkit-mask-image: var(--rating-mask, none);
+    mask-image: var(--rating-mask, none);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    transition: background-color 0.2s ease;
+  }
+
+  .rating .mask:hover {
+    background-color: var(--rating-hover);
+  }
+
+  .rating .mask:focus-visible {
+    outline: 2px solid rgb(125 211 252);
+    outline-offset: 2px;
+  }
+
+  .rating .mask-star-2 {
+    --rating-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.98a1 1 0 00.95.69h4.19c.969 0 1.371 1.24.588 1.81l-3.392 2.466a1 1 0 00-.364 1.118l1.287 3.98c.3.922-.755 1.688-1.538 1.118l-3.392-2.466a1 1 0 00-1.176 0l-3.392 2.466c-.783.57-1.838-.196-1.539-1.118l1.287-3.98a1 1 0 00-.364-1.118L2.94 9.407c-.783-.57-.38-1.81.588-1.81h4.19a1 1 0 00.95-.69l1.286-3.98z'/%3E%3C/svg%3E");
+  }
+
+  .rating.rating-half .mask {
+    -webkit-mask-size: 200% 100%;
+    mask-size: 200% 100%;
+  }
+
+  .rating.rating-half .mask-half-1 {
+    -webkit-mask-position: left;
+    mask-position: left;
+  }
+
+  .rating.rating-half .mask-half-2 {
+    -webkit-mask-position: right;
+    mask-position: right;
+  }
+
+  .rating .mask:checked ~ .mask,
+  .rating .rating-hidden:checked ~ .mask {
+    background-color: var(--rating-inactive);
+  }
+
+  .rating .mask:checked {
+    background-color: var(--rating-active);
+  }
+
+  .rating.rating-xs {
+    --rating-size: 1rem;
+  }
+
+  .rating.rating-sm {
+    --rating-size: 1.25rem;
+  }
+
+  .rating.rating-md {
+    --rating-size: 1.5rem;
+  }
+
+  .rating.rating-lg {
+    --rating-size: 2rem;
+  }
+
+  .rating.rating-xl {
+    --rating-size: 2.5rem;
+  }
+}
