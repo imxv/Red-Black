@@ -17,6 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { Merchant } from "@/data/merchants";
+import { mainServiceIcons } from "@/data/main-services";
 
 function BackIcon({ className }: { className?: string }) {
   return (
@@ -188,8 +189,13 @@ export function MerchantDetailClient({
 
           <CardContent className="flex flex-col gap-10 pt-8">
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="rounded-2xl border border-border/40 bg-white/[0.02] p-6">
-                <RatingDisplay rating={merchant.rating} />
+              <div className="flex items-center justify-center rounded-2xl border border-border/40 bg-white/[0.02] p-6">
+                <RatingDisplay
+                  rating={merchant.rating}
+                  reviewCount={merchant.reviews}
+                  starSize="lg"
+                  align="center"
+                />
               </div>
 
               <div className="rounded-2xl border border-border/40 bg-white/[0.02] p-6">
@@ -203,19 +209,29 @@ export function MerchantDetailClient({
                   </p>
                 </div>
               </div>
+
+              <div className="rounded-2xl border border-border/40 bg-white/[0.02] p-6 md:col-span-2">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  主营
+                </p>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  {mainServiceIcons.map((icon) => (
+                    <div
+                      key={icon.src}
+                      className="flex h-11 w-11 items-center justify-center rounded-xl border border-border/30 bg-white/[0.04]"
+                    >
+                      <img
+                        src={icon.src}
+                        alt={icon.alt}
+                        className="h-7 w-7 shrink-0 object-contain"
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-3">
-              <h2 className="text-sm font-semibold text-foreground">店铺亮点</h2>
-              <ul className="grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
-                {merchant.highlights.map((highlight) => (
-                  <li key={highlight} className="flex items-start gap-2">
-                    <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-sky-400" />
-                    <span>{highlight}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </CardContent>
 
           <CardFooter className="flex flex-wrap items-center justify-between gap-4 border-t border-border/40 pt-6">

@@ -1,4 +1,16 @@
+import { cn } from "@/lib/utils";
+
 const TOTAL_STARS = 5;
+
+type StarSize = "sm" | "md" | "lg";
+
+type RatingDisplayProps = {
+  rating: number;
+  reviewCount?: number;
+  starSize?: StarSize;
+  align?: "left" | "center";
+  className?: string;
+};
 
 function StarIcon({ className, filled = false }: { className?: string; filled?: boolean }) {
   return (
@@ -16,7 +28,13 @@ function StarIcon({ className, filled = false }: { className?: string; filled?: 
   );
 }
 
-export function RatingDisplay({ rating }: { rating: number }) {
+export function RatingDisplay({
+  rating,
+  reviewCount,
+  starSize = "sm",
+  align = "left",
+  className,
+}: RatingDisplayProps) {
   const getFillForStar = (index: number) => {
     const remainder = rating - index;
 
@@ -26,18 +44,29 @@ export function RatingDisplay({ rating }: { rating: number }) {
     return remainder * 100;
   };
 
+  const starSizeClasses: Record<StarSize, string> = {
+    sm: "h-4 w-4",
+    md: "h-6 w-6",
+    lg: "h-8 w-8",
+  };
+  const starClassName = starSizeClasses[starSize];
+
+  const isCentered = align === "center";
+  const containerAlignment = isCentered ? "items-center text-center" : "items-start";
+  const rowAlignment = isCentered ? "justify-center" : "";
+
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-3">
+    <div className={cn("flex flex-col gap-2", containerAlignment, className)}>
+      <div className={cn("flex flex-wrap items-center gap-3", rowAlignment)}>
         <span className="text-4xl font-semibold text-foreground">
           {rating.toFixed(1)}
         </span>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           {Array.from({ length: TOTAL_STARS }).map((_, index) => {
             const fill = getFillForStar(index);
 
             return (
-              <div key={index} className="relative h-4 w-4">
+              <div key={index} className={`relative ${starClassName}`}>
                 <StarIcon className="h-full w-full text-slate-700/60" />
                 {fill > 0 && (
                   <div
@@ -51,8 +80,12 @@ export function RatingDisplay({ rating }: { rating: number }) {
             );
           })}
         </div>
+        {typeof reviewCount === "number" && (
+          <span className="text-sm text-muted-foreground">
+            共 {reviewCount.toLocaleString()} 条评分
+          </span>
+        )}
       </div>
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">综合评分</p>
     </div>
   );
 }
