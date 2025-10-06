@@ -279,18 +279,18 @@ export function MerchantDetailClient({
             {merchant.customerReviews.map((review) => (
               <Card
                 key={review.id}
-                className="border-border/40 bg-slate-900/60 backdrop-blur"
+                className="border-border/40 bg-slate-900/60 p-4 sm:p-5 backdrop-blur"
               >
-                <CardHeader className="flex flex-row items-start gap-4 pb-3">
-                  <Avatar className="h-10 w-10 text-sm">
-                    {review.avatarUrl ? (
-                      <AvatarImage src={review.avatarUrl} alt={review.userName} />
-                    ) : (
-                      <AvatarFallback>{review.avatarFallback}</AvatarFallback>
-                    )}
-                  </Avatar>
-                  <div className="flex-1 space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
+                <CardHeader className="mb-2 gap-1.5 pb-2">
+                  <div className="grid grid-cols-[auto,1fr] items-start gap-x-3 gap-y-1.5">
+                    <Avatar className="row-span-2 h-10 w-10 text-sm">
+                      {review.avatarUrl ? (
+                        <AvatarImage src={review.avatarUrl} alt={review.userName} />
+                      ) : (
+                        <AvatarFallback>{review.avatarFallback}</AvatarFallback>
+                      )}
+                    </Avatar>
+                    <div className="flex items-center justify-between gap-2">
                       <h3 className="text-sm font-medium text-foreground">
                         {review.userName}
                       </h3>
@@ -303,11 +303,27 @@ export function MerchantDetailClient({
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="pt-0">
+                <CardContent className="gap-3 pt-0 pb-2">
                   <p className="text-sm leading-relaxed text-muted-foreground">
                     {review.comment}
                   </p>
                 </CardContent>
+                <CardFooter className="mt-2 w-full justify-end gap-2 border-t border-border/30 pt-2">
+                  <div className="ml-auto flex items-center gap-4 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1.5">
+                      <LikeIcon className="h-3.5 w-3.5 text-emerald-300/90" aria-hidden="true" />
+                      <span>
+                        点赞 <span className="text-foreground font-medium">{review.likes.toLocaleString()}</span>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <ReviewIcon className="h-3.5 w-3.5 text-sky-300/90" aria-hidden="true" />
+                      <span>
+                        回复 <span className="text-foreground font-medium">{review.replies.toLocaleString()}</span>
+                      </span>
+                    </div>
+                  </div>
+                </CardFooter>
               </Card>
             ))}
           </div>

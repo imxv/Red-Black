@@ -6,6 +6,8 @@ export type MerchantReview = {
   rating: number;
   comment: string;
   createdAt: string;
+  likes: number;
+  replies: number;
 };
 
 export type Merchant = {
@@ -57,6 +59,8 @@ export const merchants: Merchant[] = [
         rating: 5,
         comment: "店员不仅懂书还懂爬宠，推荐的资料非常靠谱，帮我避开很多入坑雷区。",
         createdAt: "2024-03-12",
+        likes: 128,
+        replies: 5,
       },
       {
         id: "chenguang-2",
@@ -65,6 +69,8 @@ export const merchants: Merchant[] = [
         rating: 4.5,
         comment: "读书会上遇到很多同好，不过热门书籍需要提前预约，稍稍有些不便。",
         createdAt: "2024-05-02",
+        likes: 94,
+        replies: 3,
       },
       {
         id: "chenguang-3",
@@ -73,6 +79,8 @@ export const merchants: Merchant[] = [
         rating: 4.8,
         comment: "环境安静舒适，爬宠专区的图书分类清晰，很适合系统学习。",
         createdAt: "2024-06-18",
+        likes: 112,
+        replies: 4,
       },
     ],
   },
@@ -104,6 +112,8 @@ export const merchants: Merchant[] = [
         rating: 5,
         comment: "咖啡味道稳定，爬宠休息区卫生做得很好，店员提醒事项也很细致。",
         createdAt: "2024-04-06",
+        likes: 156,
+        replies: 7,
       },
       {
         id: "nanlu-2",
@@ -112,6 +122,8 @@ export const merchants: Merchant[] = [
         rating: 4.7,
         comment: "喜欢店里的互动讲座，可惜报名名额有限，经常抢不到。",
         createdAt: "2024-05-27",
+        likes: 103,
+        replies: 2,
       },
     ],
   },
@@ -143,6 +155,8 @@ export const merchants: Merchant[] = [
         rating: 4.6,
         comment: "菜品口味清爽，不过配送偶尔有延迟，幸好客服回应及时。",
         createdAt: "2024-03-28",
+        likes: 87,
+        replies: 3,
       },
       {
         id: "chixia-2",
@@ -151,6 +165,8 @@ export const merchants: Merchant[] = [
         rating: 4.9,
         comment: "包材环保且有饲养贴士，真的很走心，已经回购多次。",
         createdAt: "2024-06-01",
+        likes: 141,
+        replies: 6,
       },
     ],
   },
@@ -182,6 +198,8 @@ export const merchants: Merchant[] = [
         rating: 4.5,
         comment: "茶味层次丰富，包间舒适，但晚高峰时段服务响应稍慢。",
         createdAt: "2024-04-18",
+        likes: 76,
+        replies: 2,
       },
       {
         id: "guiyi-2",
@@ -190,6 +208,8 @@ export const merchants: Merchant[] = [
         rating: 4.7,
         comment: "香薰组合很贴心，宠物也能放松下来，确实有用。",
         createdAt: "2024-06-11",
+        likes: 119,
+        replies: 5,
       },
     ],
   },
@@ -221,6 +241,8 @@ export const merchants: Merchant[] = [
         rating: 4.8,
         comment: "限定款真的很惊喜，预约取餐流程顺畅，包装也很精致。",
         createdAt: "2024-05-08",
+        likes: 134,
+        replies: 4,
       },
       {
         id: "beian-2",
@@ -229,6 +251,8 @@ export const merchants: Merchant[] = [
         rating: 4.4,
         comment: "味道不错，但午后高峰排队时间稍长，希望能增加自助取餐。",
         createdAt: "2024-06-20",
+        likes: 92,
+        replies: 3,
       },
     ],
   },
@@ -260,6 +284,8 @@ export const merchants: Merchant[] = [
         rating: 4.6,
         comment: "造景师很专业，空间利用得当，只是等待安排上门的时间稍长。",
         createdAt: "2024-03-30",
+        likes: 81,
+        replies: 2,
       },
       {
         id: "shihua-2",
@@ -268,6 +294,8 @@ export const merchants: Merchant[] = [
         rating: 4.3,
         comment: "植物状态不错，售后回访也很及时，希望后续能推出维护套餐。",
         createdAt: "2024-06-09",
+        likes: 68,
+        replies: 1,
       },
     ],
   },
