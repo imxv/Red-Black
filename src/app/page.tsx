@@ -109,21 +109,6 @@ export default function Home() {
     }
   }, [activeSection]);
 
-  useEffect(() => {
-    const selector = activeSection === "merchants" ? ".merchant-card" : ".exposure-card";
-    const cardAnimation = animate(selector, {
-      opacity: [0, 1],
-      translateY: [24, 0],
-      delay: (_el, index) => index * 90,
-      duration: 720,
-      easing: "easeOutQuad",
-    });
-
-    return () => {
-      cardAnimation.pause();
-    };
-  }, [activeSection, exposureData, merchantData]);
-
   const handleReaction = (
     index: number,
     field: "likes" | "dislikes",
