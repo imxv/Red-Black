@@ -91,6 +91,42 @@ function ReviewIcon({ className, ...props }: IconProps) {
   );
 }
 
+function PlusIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M12 5v14" />
+      <path d="M5 12h14" />
+    </svg>
+  );
+}
+
+function CloseIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M6 6l12 12" />
+      <path d="M18 6L6 18" />
+    </svg>
+  );
+}
+
 type Section = "merchants" | "exposures";
 
 export default function Home() {
@@ -162,68 +198,65 @@ export default function Home() {
     <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)]">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(59,130,246,0.18),_transparent_55%)]" />
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-16 sm:px-6 lg:px-8">
-        <header className="max-w-3xl space-y-4">
-          <Badge className="w-fit">爬宠界的 &ldquo;大众点评&rdquo;</Badge>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-            爬宠商家红黑榜
-          </h1>
-          <p className="text-base text-muted-foreground">
-            玩家们自发组织的爬宠商家红黑榜，公平公正，旨在帮助大家选择更靠谱的优质商家，避雷黑心商家。
-          </p>
-        </header>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <header className="max-w-3xl space-y-4">
+            <Badge className="w-fit">爬宠界的 &ldquo;大众点评&rdquo;</Badge>
+            <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              爬宠商家红黑榜
+            </h1>
+            <p className="text-base text-muted-foreground">
+              玩家们自发组织的爬宠商家红黑榜，公平公正，旨在帮助大家选择更靠谱的优质商家，避雷黑心商家。
+            </p>
+          </header>
 
-        {/* 分区切换标签 */}
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => setActiveSection("merchants")}
-            className={cn(
-              "rounded-lg px-6 py-2.5 text-sm font-medium transition-all",
-              activeSection === "merchants"
-                ? "bg-sky-500 text-white shadow-lg shadow-sky-500/30"
-                : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground"
-            )}
-          >
-            <div className="flex items-center gap-2">
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-              <span>商家榜单</span>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveSection("exposures")}
-            className={cn(
-              "rounded-lg px-6 py-2.5 text-sm font-medium transition-all",
-              activeSection === "exposures"
-                ? "bg-rose-500 text-white shadow-lg shadow-rose-500/30"
-                : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground"
-            )}
-          >
-            <div className="flex items-center gap-2">
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              <span>曝光专区</span>
-              {exposureData.length > 0 && (
-                <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs">
-                  {exposureData.length}
-                </span>
+          {/* 分区切换标签 */}
+          <div className="flex gap-2 self-end lg:self-start">
+            <button
+              type="button"
+              onClick={() => setActiveSection("merchants")}
+              className={cn(
+                "rounded-lg px-6 py-2.5 text-sm font-medium transition-all",
+                activeSection === "merchants"
+                  ? "bg-sky-500 text-white shadow-lg shadow-sky-500/30"
+                  : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground"
               )}
-            </div>
-          </button>
+            >
+              <div className="flex items-center gap-2">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span>商家榜单</span>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveSection("exposures")}
+              className={cn(
+                "rounded-lg px-6 py-2.5 text-sm font-medium transition-all",
+                activeSection === "exposures"
+                  ? "bg-rose-500 text-white shadow-lg shadow-rose-500/30"
+                  : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground"
+              )}
+            >
+              <div className="flex items-center gap-2">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>曝光专区</span>
+              </div>
+            </button>
+          </div>
         </div>
 
         {/* 商家榜单内容 */}
         {activeSection === "merchants" && (
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {merchantData.map((merchant, index) => (
               <Card
                 key={merchant.name}
                 className={cn(
-                  "merchant-card relative cursor-pointer border-border/50 bg-slate-900/70 p-6 backdrop-blur-lg",
+                  "merchant-card relative cursor-pointer border-border/50 bg-slate-900/70 p-5 backdrop-blur-lg",
                   "before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-gradient-to-br before:from-white/5 before:via-white/0 before:to-white/10",
                 )}
                 role="button"
@@ -236,7 +269,7 @@ export default function Home() {
                   }
                 }}
               >
-                <CardHeader className="mb-6 flex flex-col gap-6">
+                <CardHeader className="mb-4 flex flex-col gap-4">
                   <div className="flex items-center gap-4">
                     <Avatar
                       className="h-14 w-14 text-lg"
@@ -260,24 +293,25 @@ export default function Home() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="flex flex-col gap-6">
+                <CardContent className="flex flex-col gap-4">
                   <RatingDisplay rating={merchant.rating} />
 
-                  <div className="grid gap-4 text-sm text-foreground sm:grid-cols-2">
-                    <div className="rounded-2xl border border-border/40 bg-white/[0.02] p-4 backdrop-blur">
+                  <div className="grid grid-cols-1 gap-3 text-sm text-foreground">
+                    <div className="rounded-2xl border border-border/40 bg-white/[0.02] p-3 backdrop-blur">
                       <p className="text-xs uppercase tracking-wide text-muted-foreground">主营</p>
-                      <div className="mt-3 flex items-center gap-1.5 overflow-hidden">
+                      <div className="mt-2 flex items-center gap-2 overflow-hidden">
                         {mainServiceIconsToDisplay.map((icon) => (
-                          <img
-                            key={icon.src}
-                            src={icon.src}
-                            alt={icon.alt}
-                            className="h-7 w-7 flex-shrink-0 object-contain"
-                            loading="lazy"
-                          />
+                          <div key={icon.src} className="flex flex-1 justify-center">
+                            <img
+                              src={icon.src}
+                              alt={icon.alt}
+                              className="h-9 w-9 flex-shrink-0 object-contain"
+                              loading="lazy"
+                            />
+                          </div>
                         ))}
                         {hasExtraMainServiceIcons && (
-                          <span className="flex-shrink-0 text-sm font-medium text-muted-foreground">
+                          <span className="flex flex-1 justify-center text-base font-medium text-muted-foreground">
                             ...
                           </span>
                         )}
@@ -286,11 +320,11 @@ export default function Home() {
                   </div>
                 </CardContent>
                 <CardFooter className="mt-2 border-t border-border/40 pt-4 text-sm text-muted-foreground">
-                  <div className="flex w-full flex-wrap items-center justify-between gap-4">
+                  <div className="flex w-full flex-wrap items-center gap-3">
                     <button
                       type="button"
                       onClick={handleReaction(index, "likes")}
-                      className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-emerald-300/90 transition-colors hover:text-emerald-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                      className="inline-flex cursor-pointer select-none items-center gap-1 rounded-full px-2 py-1 text-emerald-300/90 transition-colors hover:text-emerald-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                       aria-label={`${merchant.name} 点赞`}
                     >
                       <LikeIcon className="like-icon h-4 w-4" aria-hidden="true" />
@@ -301,7 +335,7 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={handleReaction(index, "dislikes")}
-                      className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-rose-300/90 transition-colors hover:text-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                      className="inline-flex cursor-pointer select-none items-center gap-1 rounded-full px-2 py-1 text-rose-300/90 transition-colors hover:text-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                       aria-label={`${merchant.name} 点踩`}
                     >
                       <DislikeIcon className="dislike-icon h-4 w-4" aria-hidden="true" />
@@ -309,7 +343,7 @@ export default function Home() {
                         {merchant.dislikes.toLocaleString()}
                       </span>
                     </button>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1">
                       <ReviewIcon className="h-4 w-4 text-sky-300/90" aria-hidden="true" />
                       <span className="font-medium text-foreground">
                         {merchant.reviews.toLocaleString()} 条
@@ -324,23 +358,8 @@ export default function Home() {
 
         {/* 曝光专区内容 */}
         {activeSection === "exposures" && (
-          <div className="space-y-6">
-            {/* 提交曝光按钮 */}
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={() => setShowExposureForm(!showExposureForm)}
-                className={cn(
-                  "rounded-lg px-6 py-2.5 text-sm font-medium transition-colors",
-                  showExposureForm
-                    ? "bg-white/[0.08] text-foreground"
-                    : "bg-rose-500 text-white hover:bg-rose-600"
-                )}
-              >
-                {showExposureForm ? "取消提交" : "提交曝光"}
-              </button>
-            </div>
-
+          <>
+            <div className="space-y-6 pb-24">
             {/* 曝光提交表单 */}
             {showExposureForm && (
               <ExposureForm onSubmitSuccess={handleExposureSubmitSuccess} />
@@ -379,7 +398,28 @@ export default function Home() {
                 </p>
               </div>
             )}
-          </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowExposureForm((previous) => !previous)}
+              className={cn(
+                "fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full transition-transform transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
+                "shadow-xl shadow-rose-500/40",
+                "bg-rose-500 text-white hover:scale-105 hover:bg-rose-600",
+              )}
+              aria-label={showExposureForm ? "取消提交曝光" : "提交曝光"}
+            >
+              {showExposureForm ? (
+                <CloseIcon className="h-6 w-6" aria-hidden="true" />
+              ) : (
+                <PlusIcon className="h-6 w-6" aria-hidden="true" />
+              )}
+              <span className="sr-only">
+                {showExposureForm ? "取消提交曝光" : "提交曝光"}
+              </span>
+            </button>
+          </>
         )}
       </main>
     </div>
