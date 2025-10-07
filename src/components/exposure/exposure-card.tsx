@@ -61,31 +61,32 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
           "before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-gradient-to-br before:from-white/5 before:via-white/0 before:to-white/10"
         )}
       >
-        <CardHeader className="mb-4 flex flex-row items-start justify-between gap-4 p-0">
-          <div className="flex items-center gap-3">
+        <CardHeader className="relative mb-4 flex items-start gap-3 p-0">
+          <div className="flex items-center gap-3 pr-16">
             <Avatar className="h-10 w-10 text-sm bg-sky-500">
               <AvatarFallback>{exposure.submitterAvatar}</AvatarFallback>
             </Avatar>
 
-            <div>
+            <div className="flex flex-col">
               <p className="text-sm font-medium text-foreground">{exposure.submitter}</p>
-              <p className="text-xs text-muted-foreground">{exposure.createdAt}</p>
             </div>
           </div>
 
-          <Badge variant="destructive" className="bg-rose-500/20 text-rose-300 hover:bg-rose-500/30">
-            曝光
-          </Badge>
+          <span className="absolute right-0 top-0 text-xs text-muted-foreground">
+            {exposure.createdAt}
+          </span>
         </CardHeader>
 
-        <CardContent className="space-y-4 p-0">
-          {/* 标题 */}
-          <h3 className="text-lg font-semibold text-foreground">{exposure.title}</h3>
+        <CardContent className="flex flex-col gap-4 p-0">
+          <div className="space-y-2">
+            {/* 标题 */}
+            <h3 className="text-lg font-semibold text-foreground">{exposure.title}</h3>
 
-          {/* 描述 */}
-          <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
-            {exposure.description}
-          </p>
+            {/* 描述 */}
+            <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
+              {exposure.description}
+            </p>
+          </div>
 
           {/* 图片轮播 */}
           {exposure.images.length > 0 && (
@@ -162,83 +163,85 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
             </div>
           )}
 
-          {/* 标签 */}
-          {exposure.tags && exposure.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {exposure.tags.map((tag) => (
-                <Badge
-                  key={tag}
-                  variant="secondary"
-                  className="bg-white/[0.04] text-xs text-muted-foreground hover:bg-white/[0.08]"
-                >
-                  #{tag}
-                </Badge>
-              ))}
-            </div>
-          )}
         </CardContent>
 
         <CardFooter className="mt-4 border-t border-border/40 p-0 pt-4">
-          <div className="flex w-full items-center gap-4 text-sm text-muted-foreground">
-            <button
-              type="button"
-              onClick={handleReaction("like", onLike)}
-              className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-emerald-300/90 transition-colors hover:text-emerald-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60"
-              aria-label="支持"
-            >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.4}
-              >
-                <path d="M6 10.4v8.2" />
-                <path d="M8.5 18.6h7.22a2 2 0 001.93-1.46l1.12-4.08A1.5 1.5 0 0017.33 11h-3.98l.56-2.84a1.8 1.8 0 00-3.48-1.02l-1.93 3.26a2.9 2.9 0 01-.53.67l-.47.44" />
-                <path d="M6 10.4H4.3A2.3 2.3 0 002 12.7v3.18A2.3 2.3 0 004.3 18.2H6" />
-              </svg>
-              <span className="font-medium text-foreground">
-                {exposure.likes.toLocaleString()}
-              </span>
-            </button>
+          <div className="flex w-full flex-wrap items-end gap-4 text-sm text-muted-foreground">
+            {exposure.tags && exposure.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {exposure.tags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="secondary"
+                    className="bg-white/[0.04] text-xs text-muted-foreground hover:bg-white/[0.08]"
+                  >
+                    #{tag}
+                  </Badge>
+                ))}
+              </div>
+            )}
 
-            <button
-              type="button"
-              onClick={handleReaction("dislike", onDislike)}
-              className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-rose-300/90 transition-colors hover:text-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60"
-              aria-label="质疑"
-            >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.4}
+            <div className="ml-auto flex items-center gap-4">
+              <button
+                type="button"
+                onClick={handleReaction("like", onLike)}
+                className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-emerald-300/90 transition-colors hover:text-emerald-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60"
+                aria-label="支持"
               >
-                <path d="M18 13.6V5.4" />
-                <path d="M15.5 5.4H8.28a2 2 0 00-1.93 1.46l-1.12 4.08A1.5 1.5 0 006.67 13h3.98l-.56 2.84a1.8 1.8 0 003.48 1.02l1.93-3.26c.15-.25.33-.47.53-.67l.47-.44" />
-                <path d="M18 13.6h1.7A2.3 2.3 0 0022 11.3V8.12A2.3 2.3 0 0019.7 5.8H18" />
-              </svg>
-              <span className="font-medium text-foreground">
-                {exposure.dislikes.toLocaleString()}
-              </span>
-            </button>
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.4}
+                >
+                  <path d="M6 10.4v8.2" />
+                  <path d="M8.5 18.6h7.22a2 2 0 001.93-1.46l1.12-4.08A1.5 1.5 0 0017.33 11h-3.98l.56-2.84a1.8 1.8 0 00-3.48-1.02l-1.93 3.26a2.9 2.9 0 01-.53.67l-.47.44" />
+                  <path d="M6 10.4H4.3A2.3 2.3 0 002 12.7v3.18A2.3 2.3 0 004.3 18.2H6" />
+                </svg>
+                <span className="font-medium text-foreground">
+                  {exposure.likes.toLocaleString()}
+                </span>
+              </button>
 
-            <div className="flex items-center gap-1.5">
-              <svg
-                className="h-4 w-4 text-sky-300/90"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.5}
+              <button
+                type="button"
+                onClick={handleReaction("dislike", onDislike)}
+                className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-rose-300/90 transition-colors hover:text-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60"
+                aria-label="质疑"
               >
-                <path d="M4 6.75A2.75 2.75 0 016.75 4h10.5A2.75 2.75 0 0120 6.75V13a2.75 2.75 0 01-2.75 2.75H12l-4 3.25V15.75H6.75A2.75 2.75 0 014 13V6.75z" />
-                <path d="M8.5 8.75h7" />
-                <path d="M8.5 12h4.5" />
-              </svg>
-              <span className="font-medium text-foreground">
-                {exposure.comments.length} 条
-              </span>
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.4}
+                >
+                  <path d="M18 13.6V5.4" />
+                  <path d="M15.5 5.4H8.28a2 2 0 00-1.93 1.46l-1.12 4.08A1.5 1.5 0 006.67 13h3.98l-.56 2.84a1.8 1.8 0 003.48 1.02l1.93-3.26c.15-.25.33-.47.53-.67l.47-.44" />
+                  <path d="M18 13.6h1.7A2.3 2.3 0 0022 11.3V8.12A2.3 2.3 0 0019.7 5.8H18" />
+                </svg>
+                <span className="font-medium text-foreground">
+                  {exposure.dislikes.toLocaleString()}
+                </span>
+              </button>
+
+              <div className="flex items-center gap-1.5">
+                <svg
+                  className="h-4 w-4 text-sky-300/90"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path d="M4 6.75A2.75 2.75 0 016.75 4h10.5A2.75 2.75 0 0120 6.75V13a2.75 2.75 0 01-2.75 2.75H12l-4 3.25V15.75H6.75A2.75 2.75 0 014 13V6.75z" />
+                  <path d="M8.5 8.75h7" />
+                  <path d="M8.5 12h4.5" />
+                </svg>
+                <span className="font-medium text-foreground">
+                  {exposure.comments.length}
+                </span>
+              </div>
             </div>
           </div>
         </CardFooter>
