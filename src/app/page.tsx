@@ -24,6 +24,9 @@ import { cn } from "@/lib/utils";
 import { RatingDisplay } from "@/components/merchant/rating-display";
 import { merchants as merchantSource, type Merchant } from "@/data/merchants";
 import { mainServiceIcons } from "@/data/main-services";
+import { ExposureForm } from "@/components/exposure/exposure-form";
+import { ExposureCard } from "@/components/exposure/exposure-card";
+import { loadExposures, updateExposure, type Exposure } from "@/data/exposures";
 
 const MAX_MAIN_SERVICE_ICONS = 3;
 const mainServiceIconsToDisplay = mainServiceIcons.slice(0, MAX_MAIN_SERVICE_ICONS);
@@ -88,14 +91,27 @@ function ReviewIcon({ className, ...props }: IconProps) {
   );
 }
 
+type Section = "merchants" | "exposures";
+
 export default function Home() {
   const router = useRouter();
+  const [activeSection, setActiveSection] = useState<Section>("merchants");
   const [merchantData, setMerchantData] = useState<Merchant[]>(() =>
     merchantSource.map((merchant) => ({ ...merchant })),
   );
+  const [exposureData, setExposureData] = useState<Exposure[]>([]);
+  const [showExposureForm, setShowExposureForm] = useState(false);
+
+  // 加载曝光数据
+  useEffect(() => {
+    if (activeSection === "exposures") {
+      setExposureData(loadExposures());
+    }
+  }, [activeSection]);
 
   useEffect(() => {
-    const cardAnimation = animate(".merchant-card", {
+    const selector = activeSection === "merchants" ? ".merchant-card" : ".exposure-card";
+    const cardAnimation = animate(selector, {
       opacity: [0, 1],
       translateY: [24, 0],
       delay: (_el, index) => index * 90,
@@ -106,7 +122,7 @@ export default function Home() {
     return () => {
       cardAnimation.pause();
     };
-  }, []);
+  }, [activeSection, exposureData, merchantData]);
 
   const handleReaction = (
     index: number,
@@ -139,12 +155,30 @@ export default function Home() {
     }
   };
 
+  const handleExposureReaction = (id: string, field: "likes" | "dislikes") => {
+    const exposures = loadExposures();
+    const exposure = exposures.find((exp) => exp.id === id);
+
+    if (exposure) {
+      const updatedValue = exposure[field] + 1;
+      updateExposure(id, { [field]: updatedValue });
+      setExposureData(loadExposures());
+    }
+  };
+
+  const handleExposureSubmitSuccess = () => {
+    setExposureData(loadExposures());
+    setShowExposureForm(false);
+    // 滚动到顶部查看新提交的曝光
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)]">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(59,130,246,0.18),_transparent_55%)]" />
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-16 sm:px-6 lg:px-8">
         <header className="max-w-3xl space-y-4">
-          <Badge className="w-fit">爬宠界的 “大众点评”</Badge>
+          <Badge className="w-fit">爬宠界的 &ldquo;大众点评&rdquo;</Badge>
           <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
             爬宠商家红黑榜
           </h1>
@@ -153,108 +187,215 @@ export default function Home() {
           </p>
         </header>
 
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {merchantData.map((merchant, index) => (
-            <Card
-              key={merchant.name}
-              className={cn(
-                "merchant-card relative cursor-pointer border-border/50 bg-slate-900/70 p-6 backdrop-blur-lg",
-                "before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-gradient-to-br before:from-white/5 before:via-white/0 before:to-white/10",
+        {/* 分区切换标签 */}
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setActiveSection("merchants")}
+            className={cn(
+              "rounded-lg px-6 py-2.5 text-sm font-medium transition-all",
+              activeSection === "merchants"
+                ? "bg-sky-500 text-white shadow-lg shadow-sky-500/30"
+                : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground"
+            )}
+          >
+            <div className="flex items-center gap-2">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              <span>商家榜单</span>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveSection("exposures")}
+            className={cn(
+              "rounded-lg px-6 py-2.5 text-sm font-medium transition-all",
+              activeSection === "exposures"
+                ? "bg-rose-500 text-white shadow-lg shadow-rose-500/30"
+                : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground"
+            )}
+          >
+            <div className="flex items-center gap-2">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <span>曝光专区</span>
+              {exposureData.length > 0 && (
+                <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs">
+                  {exposureData.length}
+                </span>
               )}
-              role="button"
-              tabIndex={0}
-              onClick={() => router.push(`/merchants/${merchant.slug}`)}
-              onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  router.push(`/merchants/${merchant.slug}`);
-                }
-              }}
-            >
-              <CardHeader className="mb-6 flex flex-col gap-6">
-                <div className="flex items-center gap-4">
-                  <Avatar
-                    className="h-14 w-14 text-lg"
-                    style={{ background: merchant.avatarColor }}
-                  >
-                    {merchant.avatarUrl ? (
-                      <AvatarImage src={merchant.avatarUrl} alt={merchant.name} />
-                    ) : (
-                      <AvatarFallback>{merchant.avatarFallback}</AvatarFallback>
-                    )}
-                  </Avatar>
+            </div>
+          </button>
+        </div>
 
-                  <div className="space-y-1">
-                    <CardTitle className="text-lg font-semibold text-foreground">
-                      {merchant.name}
-                    </CardTitle>
-                    <CardDescription className="text-sm text-muted-foreground">
-                      {merchant.location}
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-
-              <CardContent className="flex flex-col gap-6">
-                <RatingDisplay rating={merchant.rating} />
-
-                <div className="grid gap-4 text-sm text-foreground sm:grid-cols-2">
-                  <div className="rounded-2xl border border-border/40 bg-white/[0.02] p-4 backdrop-blur">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">主营</p>
-                    <div className="mt-3 flex items-center gap-1.5 overflow-hidden">
-                      {mainServiceIconsToDisplay.map((icon) => (
-                        <img
-                          key={icon.src}
-                          src={icon.src}
-                          alt={icon.alt}
-                          className="h-7 w-7 flex-shrink-0 object-contain"
-                          loading="lazy"
-                        />
-                      ))}
-                      {hasExtraMainServiceIcons && (
-                        <span className="flex-shrink-0 text-sm font-medium text-muted-foreground">
-                          ...
-                        </span>
+        {/* 商家榜单内容 */}
+        {activeSection === "merchants" && (
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {merchantData.map((merchant, index) => (
+              <Card
+                key={merchant.name}
+                className={cn(
+                  "merchant-card relative cursor-pointer border-border/50 bg-slate-900/70 p-6 backdrop-blur-lg",
+                  "before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-gradient-to-br before:from-white/5 before:via-white/0 before:to-white/10",
+                )}
+                role="button"
+                tabIndex={0}
+                onClick={() => router.push(`/merchants/${merchant.slug}`)}
+                onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    router.push(`/merchants/${merchant.slug}`);
+                  }
+                }}
+              >
+                <CardHeader className="mb-6 flex flex-col gap-6">
+                  <div className="flex items-center gap-4">
+                    <Avatar
+                      className="h-14 w-14 text-lg"
+                      style={{ background: merchant.avatarColor }}
+                    >
+                      {merchant.avatarUrl ? (
+                        <AvatarImage src={merchant.avatarUrl} alt={merchant.name} />
+                      ) : (
+                        <AvatarFallback>{merchant.avatarFallback}</AvatarFallback>
                       )}
+                    </Avatar>
+
+                    <div className="space-y-1">
+                      <CardTitle className="text-lg font-semibold text-foreground">
+                        {merchant.name}
+                      </CardTitle>
+                      <CardDescription className="text-sm text-muted-foreground">
+                        {merchant.location}
+                      </CardDescription>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-              <CardFooter className="mt-2 border-t border-border/40 pt-4 text-sm text-muted-foreground">
-                <div className="flex w-full flex-wrap items-center justify-between gap-4">
-                  <button
-                    type="button"
-                    onClick={handleReaction(index, "likes")}
-                    className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-emerald-300/90 transition-colors hover:text-emerald-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-                    aria-label={`${merchant.name} 点赞`}
-                  >
-                    <LikeIcon className="like-icon h-4 w-4" aria-hidden="true" />
-                    <span className="font-medium text-foreground">
-                      {merchant.likes.toLocaleString()}
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleReaction(index, "dislikes")}
-                    className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-rose-300/90 transition-colors hover:text-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-                    aria-label={`${merchant.name} 点踩`}
-                  >
-                    <DislikeIcon className="dislike-icon h-4 w-4" aria-hidden="true" />
-                    <span className="font-medium text-foreground">
-                      {merchant.dislikes.toLocaleString()}
-                    </span>
-                  </button>
-                  <div className="flex items-center gap-1.5">
-                    <ReviewIcon className="h-4 w-4 text-sky-300/90" aria-hidden="true" />
-                    <span className="font-medium text-foreground">
-                      {merchant.reviews.toLocaleString()} 条
-                    </span>
+                </CardHeader>
+
+                <CardContent className="flex flex-col gap-6">
+                  <RatingDisplay rating={merchant.rating} />
+
+                  <div className="grid gap-4 text-sm text-foreground sm:grid-cols-2">
+                    <div className="rounded-2xl border border-border/40 bg-white/[0.02] p-4 backdrop-blur">
+                      <p className="text-xs uppercase tracking-wide text-muted-foreground">主营</p>
+                      <div className="mt-3 flex items-center gap-1.5 overflow-hidden">
+                        {mainServiceIconsToDisplay.map((icon) => (
+                          <img
+                            key={icon.src}
+                            src={icon.src}
+                            alt={icon.alt}
+                            className="h-7 w-7 flex-shrink-0 object-contain"
+                            loading="lazy"
+                          />
+                        ))}
+                        {hasExtraMainServiceIcons && (
+                          <span className="flex-shrink-0 text-sm font-medium text-muted-foreground">
+                            ...
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+                </CardContent>
+                <CardFooter className="mt-2 border-t border-border/40 pt-4 text-sm text-muted-foreground">
+                  <div className="flex w-full flex-wrap items-center justify-between gap-4">
+                    <button
+                      type="button"
+                      onClick={handleReaction(index, "likes")}
+                      className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-emerald-300/90 transition-colors hover:text-emerald-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                      aria-label={`${merchant.name} 点赞`}
+                    >
+                      <LikeIcon className="like-icon h-4 w-4" aria-hidden="true" />
+                      <span className="font-medium text-foreground">
+                        {merchant.likes.toLocaleString()}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleReaction(index, "dislikes")}
+                      className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-rose-300/90 transition-colors hover:text-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                      aria-label={`${merchant.name} 点踩`}
+                    >
+                      <DislikeIcon className="dislike-icon h-4 w-4" aria-hidden="true" />
+                      <span className="font-medium text-foreground">
+                        {merchant.dislikes.toLocaleString()}
+                      </span>
+                    </button>
+                    <div className="flex items-center gap-1.5">
+                      <ReviewIcon className="h-4 w-4 text-sky-300/90" aria-hidden="true" />
+                      <span className="font-medium text-foreground">
+                        {merchant.reviews.toLocaleString()} 条
+                      </span>
+                    </div>
+                  </div>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* 曝光专区内容 */}
+        {activeSection === "exposures" && (
+          <div className="space-y-6">
+            {/* 提交曝光按钮 */}
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowExposureForm(!showExposureForm)}
+                className={cn(
+                  "rounded-lg px-6 py-2.5 text-sm font-medium transition-colors",
+                  showExposureForm
+                    ? "bg-white/[0.08] text-foreground"
+                    : "bg-rose-500 text-white hover:bg-rose-600"
+                )}
+              >
+                {showExposureForm ? "取消提交" : "提交曝光"}
+              </button>
+            </div>
+
+            {/* 曝光提交表单 */}
+            {showExposureForm && (
+              <ExposureForm onSubmitSuccess={handleExposureSubmitSuccess} />
+            )}
+
+            {/* 曝光列表 */}
+            {exposureData.length > 0 ? (
+              <div className="grid gap-6">
+                {exposureData.map((exposure) => (
+                  <ExposureCard
+                    key={exposure.id}
+                    exposure={exposure}
+                    onLike={(id) => handleExposureReaction(id, "likes")}
+                    onDislike={(id) => handleExposureReaction(id, "dislikes")}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-border/40 bg-slate-900/70 p-12 text-center backdrop-blur-lg">
+                <svg
+                  className="mx-auto h-16 w-16 text-muted-foreground"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1}
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                  />
+                </svg>
+                <h3 className="mt-4 text-lg font-semibold text-foreground">暂无曝光信息</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  还没有人提交曝光，成为第一个曝光黑心商家的人吧！
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </main>
     </div>
   );
