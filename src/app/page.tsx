@@ -27,7 +27,8 @@ import { mainServiceIcons } from "@/data/main-services";
 import { ExposureForm } from "@/components/exposure/exposure-form";
 import { ExposureCard } from "@/components/exposure/exposure-card";
 import { loadExposures, updateExposure, type Exposure } from "@/data/exposures";
-import { Navbar } from "@/components/navbar";
+import { useSession, authClient } from "@/lib/auth-client";
+import Link from "next/link";
 
 const MAX_MAIN_SERVICE_ICONS = 3;
 const mainServiceIconsToDisplay = mainServiceIcons.slice(0, MAX_MAIN_SERVICE_ICONS);
@@ -132,12 +133,14 @@ type Section = "merchants" | "exposures";
 
 export default function Home() {
   const router = useRouter();
+  const { data: session, isPending } = useSession();
   const [activeSection, setActiveSection] = useState<Section>("merchants");
   const [merchantData, setMerchantData] = useState<Merchant[]>(() =>
     merchantSource.map((merchant) => ({ ...merchant })),
   );
   const [exposureData, setExposureData] = useState<Exposure[]>([]);
   const [showExposureForm, setShowExposureForm] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   // 加载曝光数据
   useEffect(() => {
@@ -195,12 +198,91 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.push("/");
+    router.refresh();
+  };
+
+  const getAvatarFallback = (name?: string | null, email?: string | null) => {
+    if (name) return name.charAt(0).toUpperCase();
+    if (email) return email.charAt(0).toUpperCase();
+    return "U";
+  };
+
   return (
-    <>
-      <Navbar />
-      <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)]">
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(59,130,246,0.18),_transparent_55%)]" />
-        <main className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-16 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)]">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(59,130,246,0.18),_transparent_55%)]" />
+      
+      {/* 右上角登录/注册按钮 */}
+      <div className="fixed top-6 right-6 z-50">
+        {isPending ? (
+          <div className="h-10 w-24 animate-pulse rounded-full bg-white/5" />
+        ) : session?.user ? (
+          <div className="relative">
+            <button
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              className="flex items-center gap-2 rounded-full border border-border/40 bg-slate-900/80 px-3 py-2 backdrop-blur-lg transition-all hover:border-sky-400/60 hover:bg-slate-900/90"
+            >
+              <Avatar className="h-7 w-7">
+                {session.user.image && (
+                  <AvatarImage src={session.user.image} alt={session.user.name || ""} />
+                )}
+                <AvatarFallback className="bg-sky-500 text-white text-xs">
+                  {getAvatarFallback(session.user.name, session.user.email)}
+                </AvatarFallback>
+              </Avatar>
+              <span className="hidden sm:inline text-sm text-foreground">{session.user.name || session.user.email}</span>
+            </button>
+
+            {/* 用户菜单下拉 */}
+            {isUserMenuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setIsUserMenuOpen(false)}
+                />
+                <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-border/40 bg-slate-900/95 py-2 shadow-xl backdrop-blur-lg z-20">
+                  <div className="px-4 py-3 border-b border-border/40">
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {session.user.name || "用户"}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {session.user.email}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setIsUserMenuOpen(false);
+                      handleSignOut();
+                    }}
+                    className="w-full px-4 py-2.5 text-left text-sm text-rose-400 hover:bg-white/5 transition-colors"
+                  >
+                    退出登录
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Link
+              href="/auth/signin"
+              className="rounded-full border border-border/40 bg-slate-900/80 px-5 py-2 text-sm text-foreground backdrop-blur-lg transition-all hover:border-sky-400/60 hover:bg-slate-900/90"
+            >
+              登录
+            </Link>
+            <Link
+              href="/auth/signup"
+              className="rounded-full bg-sky-500 px-5 py-2 text-sm font-medium text-white transition-all hover:bg-sky-600 hover:scale-105 shadow-lg shadow-sky-500/30"
+            >
+              注册
+            </Link>
+          </div>
+        )}
+      </div>
+
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-16 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <header className="max-w-3xl space-y-4">
             <Badge className="w-fit">爬宠界的 &ldquo;大众点评&rdquo;</Badge>
@@ -424,8 +506,7 @@ export default function Home() {
             </button>
           </>
         )}
-        </main>
-      </div>
-    </>
+      </main>
+    </div>
   );
 }

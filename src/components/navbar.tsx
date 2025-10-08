@@ -101,12 +101,12 @@ export function Navbar() {
               </div>
             ) : (
               <div className="flex items-center space-x-3">
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/auth/signin">登录</Link>
-                </Button>
-                <Button size="sm" asChild>
-                  <Link href="/auth/signup">注册</Link>
-                </Button>
+                <Link href="/auth/signin">
+                  <Button variant="ghost" size="sm">登录</Button>
+                </Link>
+                <Link href="/auth/signup">
+                  <Button size="sm">注册</Button>
+                </Link>
               </div>
             )}
           </div>
@@ -129,9 +129,9 @@ export function Navbar() {
                   </Avatar>
                 </button>
               ) : (
-                <Button size="sm" asChild>
-                  <Link href="/auth/signin">登录</Link>
-                </Button>
+                <Link href="/auth/signin">
+                  <Button size="sm">登录</Button>
+                </Link>
               )
             )}
           </div>
