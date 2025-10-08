@@ -27,6 +27,7 @@ import { mainServiceIcons } from "@/data/main-services";
 import { ExposureForm } from "@/components/exposure/exposure-form";
 import { ExposureCard } from "@/components/exposure/exposure-card";
 import { loadExposures, updateExposure, type Exposure } from "@/data/exposures";
+import { Navbar } from "@/components/navbar";
 
 const MAX_MAIN_SERVICE_ICONS = 3;
 const mainServiceIconsToDisplay = mainServiceIcons.slice(0, MAX_MAIN_SERVICE_ICONS);
@@ -195,9 +196,11 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)]">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(59,130,246,0.18),_transparent_55%)]" />
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-16 sm:px-6 lg:px-8">
+    <>
+      <Navbar />
+      <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)]">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(59,130,246,0.18),_transparent_55%)]" />
+        <main className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-16 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <header className="max-w-3xl space-y-4">
             <Badge className="w-fit">爬宠界的 &ldquo;大众点评&rdquo;</Badge>
@@ -421,7 +424,8 @@ export default function Home() {
             </button>
           </>
         )}
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
