@@ -25,6 +25,9 @@ import {
 } from "@/components/ui/card";
 import type { Merchant } from "@/data/merchants";
 import { mainServiceIcons } from "@/data/main-services";
+import { useSession } from "@/lib/auth-client";
+import { useToast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 function BackIcon({ className }: { className?: string }) {
   return (
@@ -119,17 +122,39 @@ function CloseIcon({ className, ...props }: IconProps) {
   );
 }
 
+type Rating = {
+  id: string;
+  rating: number;
+  comment: string | null;
+  createdAt: Date;
+  likesCount: number;
+  dislikesCount: number;
+  user: {
+    id: string;
+    name: string | null;
+    email: string;
+    image: string | null;
+  };
+};
+
 export function MerchantDetailClient({
   merchant,
+  ratings = [],
 }: {
   merchant: Merchant;
+  ratings?: Rating[];
 }) {
   const [likes, setLikes] = useState(merchant.likes);
   const [dislikes, setDislikes] = useState(merchant.dislikes);
   const [userRating, setUserRating] = useState<number>(0);
   const [isCommentFormOpen, setIsCommentFormOpen] = useState(false);
   const [commentContent, setCommentContent] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const reviewSectionRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const { data: session } = useSession();
+  const { showToast } = useToast();
+
   const dateFormatter = useMemo(
     () =>
       new Intl.DateTimeFormat("zh-CN", {
@@ -177,15 +202,64 @@ export function MerchantDetailClient({
     setCommentContent("");
   };
 
-  const handleCommentSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleCommentSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // 这里只是展示弹窗交互，后端存储可在未来接入
-    // eslint-disable-next-line no-console
-    console.log("提交评论", {
-      merchant: merchant.slug,
-      content: commentContent.trim(),
-    });
-    handleCloseCommentForm();
+
+    // 检查用户是否登录
+    if (!session?.user) {
+      showToast("请先登录后再评论", "error");
+      router.push("/auth/signin");
+      return;
+    }
+
+    // 检查评分
+    if (userRating === 0) {
+      showToast("请先为商家打分", "error");
+      return;
+    }
+
+    // 检查评论内容
+    const trimmedComment = commentContent.trim();
+    if (trimmedComment.length === 0) {
+      showToast("请输入评论内容", "error");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(`/api/merchants/${merchant.slug}/ratings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          rating: userRating,
+          comment: trimmedComment,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "提交失败");
+      }
+
+      showToast(data.message || "评价提交成功！", "success");
+      handleCloseCommentForm();
+      setUserRating(0);
+
+      // 刷新页面以显示新评论
+      router.refresh();
+    } catch (error) {
+      console.error("提交评论失败:", error);
+      showToast(
+        error instanceof Error ? error.message : "提交失败，请稍后重试",
+        "error"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const likeCountLabel = likes.toLocaleString();
@@ -319,64 +393,141 @@ export function MerchantDetailClient({
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-xl font-semibold text-foreground">用户评价</h2>
-            <span className="text-sm text-muted-foreground">{reviewCountLabel} 条记录</span>
+            <span className="text-sm text-muted-foreground">
+              {ratings.length > 0 ? `${ratings.length} 条记录` : reviewCountLabel}
+            </span>
           </div>
 
           <div className="space-y-3">
-            {merchant.customerReviews.map((review) => (
-              <Card
-                key={review.id}
-                className="border-border/40 bg-slate-900/60 p-4 lg:p-5 backdrop-blur"
-              >
-                <CardHeader className="mb-1 gap-1.5 pb-1">
-                  <div className="grid grid-cols-[auto,1fr] items-start gap-x-2 gap-y-1.5">
-                    <Avatar className="h-10 w-10 text-sm">
-                      {review.avatarUrl ? (
-                        <AvatarImage src={review.avatarUrl} alt={review.userName} />
-                      ) : (
-                        <AvatarFallback>{review.avatarFallback}</AvatarFallback>
-                      )}
-                    </Avatar>
-                    <div className="flex items-center justify-between gap-2">
-                      <h3 className="text-sm font-medium text-foreground">
-                        {review.userName}
-                      </h3>
-                      <span className="text-xs text-muted-foreground">
-                        {dateFormatter.format(new Date(review.createdAt))}
-                      </span>
+            {ratings.length > 0 ? (
+              // 显示数据库中的真实评论
+              ratings.map((rating) => {
+                const userName = rating.user.name || rating.user.email.split("@")[0];
+                const avatarFallback = userName.charAt(0).toUpperCase();
+
+                return (
+                  <Card
+                    key={rating.id}
+                    className="border-border/40 bg-slate-900/60 p-4 lg:p-5 backdrop-blur"
+                  >
+                    <CardHeader className="mb-1 gap-1.5 pb-1">
+                      <div className="grid grid-cols-[auto,1fr] items-start gap-x-2 gap-y-1.5">
+                        <Avatar className="h-10 w-10 text-sm">
+                          {rating.user.image ? (
+                            <AvatarImage src={rating.user.image} alt={userName} />
+                          ) : (
+                            <AvatarFallback>{avatarFallback}</AvatarFallback>
+                          )}
+                        </Avatar>
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex flex-col gap-1">
+                            <h3 className="text-sm font-medium text-foreground">
+                              {userName}
+                            </h3>
+                            <div className="flex items-center gap-1">
+                              {Array.from({ length: 5 }).map((_, index) => {
+                                const filled = index < Math.floor(rating.rating);
+                                const halfFilled = index === Math.floor(rating.rating) && rating.rating % 1 !== 0;
+
+                                return (
+                                  <svg
+                                    key={index}
+                                    className="h-3.5 w-3.5"
+                                    fill={filled || halfFilled ? "currentColor" : "none"}
+                                    stroke="currentColor"
+                                    strokeWidth={1.5}
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.98a1 1 0 00.95.69h4.19c.969 0 1.371 1.24.588 1.81l-3.392 2.466a1 1 0 00-.364 1.118l1.287 3.98c.3.922-.755 1.688-1.538 1.118l-3.392-2.466a1 1 0 00-1.176 0l-3.392 2.466c-.783.57-1.838-.196-1.539-1.118l1.287-3.98a1 1 0 00-.364-1.118L2.94 9.407c-.783-.57-.38-1.81.588-1.81h4.19a1 1 0 00.95-.69l1.286-3.98z" />
+                                  </svg>
+                                );
+                              })}
+                              <span className="ml-1 text-xs text-amber-400">{rating.rating.toFixed(1)}</span>
+                            </div>
+                          </div>
+                          <span className="text-xs text-muted-foreground">
+                            {dateFormatter.format(new Date(rating.createdAt))}
+                          </span>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    {rating.comment && (
+                      <CardContent className="gap-2 pt-2 pb-1">
+                        <p className="text-sm leading-relaxed text-muted-foreground">
+                          {rating.comment}
+                        </p>
+                      </CardContent>
+                    )}
+                    <CardFooter className="mt-1 w-full justify-end gap-2 border-t border-border/30 pt-2">
+                      <div className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1.5">
+                          <LikeIcon className="h-3.5 w-3.5 text-emerald-300/90" aria-hidden="true" />
+                          <span>
+                            点赞 <span className="text-foreground font-medium">{rating.likesCount.toLocaleString()}</span>
+                          </span>
+                        </div>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                );
+              })
+            ) : (
+              // 如果没有数据库评论，显示静态数据
+              merchant.customerReviews.map((review) => (
+                <Card
+                  key={review.id}
+                  className="border-border/40 bg-slate-900/60 p-4 lg:p-5 backdrop-blur"
+                >
+                  <CardHeader className="mb-1 gap-1.5 pb-1">
+                    <div className="grid grid-cols-[auto,1fr] items-start gap-x-2 gap-y-1.5">
+                      <Avatar className="h-10 w-10 text-sm">
+                        {review.avatarUrl ? (
+                          <AvatarImage src={review.avatarUrl} alt={review.userName} />
+                        ) : (
+                          <AvatarFallback>{review.avatarFallback}</AvatarFallback>
+                        )}
+                      </Avatar>
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="text-sm font-medium text-foreground">
+                          {review.userName}
+                        </h3>
+                        <span className="text-xs text-muted-foreground">
+                          {dateFormatter.format(new Date(review.createdAt))}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="gap-2 pt-0 pb-1">
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {review.comment}
-                  </p>
-                </CardContent>
-                <CardFooter className="mt-1 w-full justify-end gap-2 border-t border-border/30 pt-2">
-                  <div className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1.5">
-                      <LikeIcon className="h-3.5 w-3.5 text-emerald-300/90" aria-hidden="true" />
-                      <span>
-                        点赞 <span className="text-foreground font-medium">{review.likes.toLocaleString()}</span>
-                      </span>
+                  </CardHeader>
+                  <CardContent className="gap-2 pt-0 pb-1">
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {review.comment}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="mt-1 w-full justify-end gap-2 border-t border-border/30 pt-2">
+                    <div className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1.5">
+                        <LikeIcon className="h-3.5 w-3.5 text-emerald-300/90" aria-hidden="true" />
+                        <span>
+                          点赞 <span className="text-foreground font-medium">{review.likes.toLocaleString()}</span>
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <ReviewIcon className="h-3.5 w-3.5 text-sky-300/90" aria-hidden="true" />
+                        <span>
+                          回复 <span className="text-foreground font-medium">{review.replies.toLocaleString()}</span>
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <ReviewIcon className="h-3.5 w-3.5 text-sky-300/90" aria-hidden="true" />
-                      <span>
-                        回复 <span className="text-foreground font-medium">{review.replies.toLocaleString()}</span>
-                      </span>
-                    </div>
-                  </div>
-                </CardFooter>
-              </Card>
-            ))}
+                  </CardFooter>
+                </Card>
+              ))
+            )}
           </div>
         </section>
 
         <button
           type="button"
           onClick={handleOpenCommentForm}
-          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-sky-500 text-white shadow-xl shadow-sky-500/35 transition-colors transition-transform hover:scale-105 hover:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-sky-500 text-white shadow-xl shadow-sky-500/35 transition-all hover:scale-105 hover:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           aria-label="发表评价"
         >
           <ReviewIcon className="h-6 w-6" aria-hidden="true" />
@@ -402,6 +553,18 @@ export function MerchantDetailClient({
 
               <form onSubmit={handleCommentSubmit} className="space-y-4 p-4 pt-0">
                 <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">
+                    评分 {userRating > 0 && <span className="text-sky-400">({userRating.toFixed(1)} 分)</span>}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <StarRatingInput value={userRating} onChange={setUserRating} />
+                  </div>
+                  {userRating === 0 && (
+                    <p className="text-xs text-muted-foreground">请为商家打分</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground" htmlFor="comment-content">
                     评论内容
                   </label>
@@ -420,15 +583,16 @@ export function MerchantDetailClient({
                     type="button"
                     onClick={handleCloseCommentForm}
                     className="rounded-full border border-border/40 px-4 py-2 text-sm text-muted-foreground transition hover:border-border/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                    disabled={isSubmitting}
                   >
                     取消
                   </button>
                   <button
                     type="submit"
-                    className="rounded-full bg-sky-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-                    disabled={commentContent.trim().length === 0}
+                    className="rounded-full bg-sky-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={commentContent.trim().length === 0 || userRating === 0 || isSubmitting}
                   >
-                    提交评价
+                    {isSubmitting ? "提交中..." : "提交评价"}
                   </button>
                 </div>
               </form>
