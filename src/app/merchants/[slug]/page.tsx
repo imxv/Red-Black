@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { PrismaClient } from "@/generated/prisma";
 import { getMerchantBySlug } from "@/data/merchants";
+import type { Merchant as MerchantCard } from "@/data/merchants";
+
 
 import { MerchantDetailClient } from "./merchant-detail-client";
 
@@ -11,18 +13,39 @@ export default async function MerchantDetailPage({
 }: {
   params: { slug: string };
 }) {
-  // 从静态数据获取商家基本信息（用于显示）
-  const merchantData = getMerchantBySlug(params.slug);
+  // 优先从静态数据获取商家（用于演示数据）
+  let merchantData = getMerchantBySlug(params.slug) as MerchantCard | undefined;
+
+  // 查找数据库中的商家（用于用户申请创建的真实数据）
+  const dbMerchant = await prisma.merchant.findUnique({
+    where: { slug: params.slug },
+  });
+
+  if (!merchantData && dbMerchant) {
+    merchantData = {
+      slug: dbMerchant.slug,
+      name: dbMerchant.displayName,
+      category: dbMerchant.category || "",
+      rating: dbMerchant.averageRating || 0,
+      scoreDelta: 0,
+      reviews: dbMerchant.totalRatings || 0,
+      likes: dbMerchant.likesCount || 0,
+      dislikes: dbMerchant.dislikesCount || 0,
+      location: dbMerchant.location || "",
+      monthlyGrowth: 0,
+      responseTime: dbMerchant.responseTime || "",
+      avatarFallback: (dbMerchant.displayName || "商").charAt(0),
+      avatarUrl: dbMerchant.avatarUrl || undefined,
+      avatarColor: dbMerchant.avatarColor || "#0ea5e9",
+      description: dbMerchant.description || "",
+      highlights: dbMerchant.highlights || [],
+      customerReviews: [],
+    };
+  }
 
   if (!merchantData) {
     notFound();
   }
-
-  // 从数据库获取该商家的评论
-  // 首先查找数据库中的商家
-  const dbMerchant = await prisma.merchant.findUnique({
-    where: { slug: params.slug },
-  });
 
   let ratings: Array<{
     id: string;

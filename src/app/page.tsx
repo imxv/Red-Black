@@ -36,6 +36,23 @@ const hasExtraMainServiceIcons = mainServiceIcons.length > MAX_MAIN_SERVICE_ICON
 
 type IconProps = SVGProps<SVGSVGElement>;
 
+type MerchantRecord = {
+  slug: string;
+  displayName: string;
+  category: string | null;
+  averageRating: number | null;
+  totalRatings: number | null;
+  likesCount: number | null;
+  dislikesCount: number | null;
+  location: string | null;
+  responseTime: string | null;
+  avatarFallback?: string | null;
+  avatarUrl: string | null;
+  avatarColor: string | null;
+  description: string | null;
+  highlights: string[] | null;
+};
+
 function LikeIcon({ className, ...props }: IconProps) {
   return (
     <svg
@@ -142,6 +159,48 @@ export default function Home() {
   const [showExposureForm, setShowExposureForm] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
+  // 加载数据库中的商家并合并到展示列表
+  useEffect(() => {
+    async function loadDbMerchants() {
+      try {
+        const res = await fetch("/api/merchants", { cache: "no-store" });
+        const json: { data?: MerchantRecord[] } = await res.json();
+        if (!res.ok) return;
+        const records = Array.isArray(json.data) ? json.data : [];
+        const mapped: Merchant[] = records.map((record) => ({
+          slug: record.slug,
+          name: record.displayName,
+          category: record.category ?? "",
+          rating: record.averageRating ?? 0,
+          scoreDelta: 0,
+          reviews: record.totalRatings ?? 0,
+          likes: record.likesCount ?? 0,
+          dislikes: record.dislikesCount ?? 0,
+          location: record.location ?? "",
+          monthlyGrowth: 0,
+          responseTime: record.responseTime ?? "",
+          avatarFallback: (record.displayName || "商").charAt(0),
+          avatarUrl: record.avatarUrl || undefined,
+          avatarColor: record.avatarColor || "#0ea5e9",
+          description: record.description ?? "",
+          highlights: record.highlights ?? [],
+          customerReviews: [],
+        }));
+        setMerchantData((prev) => {
+          const existing = new Set(prev.map((p) => p.slug));
+          const merged = [...prev];
+          for (const item of mapped) {
+            if (!existing.has(item.slug)) merged.push(item);
+          }
+          return merged;
+        });
+      } catch (e) {
+        console.error("加载商家列表失败", e);
+      }
+    }
+    loadDbMerchants();
+  }, []);
+
   // 加载曝光数据
   useEffect(() => {
     if (activeSection === "exposures") {
@@ -213,7 +272,7 @@ export default function Home() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)]">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(59,130,246,0.18),_transparent_55%)]" />
-      
+
       {/* 右上角登录/注册按钮 */}
       <div className="fixed top-6 right-6 z-50">
         {isPending ? (
@@ -251,6 +310,15 @@ export default function Home() {
                       {session.user.email}
                     </p>
                   </div>
+                  <button
+                    onClick={() => {
+                      setIsUserMenuOpen(false);
+                      router.push("/settings");
+                    }}
+                    className="w-full px-4 py-2.5 text-left text-sm text-foreground hover:bg-white/5 transition-colors"
+                  >
+                    个人设置
+                  </button>
                   <button
                     onClick={() => {
                       setIsUserMenuOpen(false);

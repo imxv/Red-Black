@@ -79,7 +79,7 @@ export function Navbar() {
                         <button
                           onClick={() => {
                             setIsMenuOpen(false);
-                            // TODO: 添加用户设置页面
+                            router.push("/settings");
                           }}
                           className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-white/5 transition-colors"
                         >
@@ -157,7 +157,7 @@ export function Navbar() {
             <button
               onClick={() => {
                 setIsMenuOpen(false);
-                // TODO: 添加用户设置页面
+                router.push("/settings");
               }}
               className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-white/5 transition-colors"
             >
