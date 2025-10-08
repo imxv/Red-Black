@@ -1,0 +1,272 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// Better Auth Tables (managed by better-auth)
+// ============================================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  name          String?
+  image         String?   // 头像URL
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // 业务扩展字段
+  isMerchant    Boolean   @default(false)  // 是否为商家
+  
+  // Better Auth 关联
+  sessions      Session[]
+  accounts      Account[]
+  
+  // 业务关联
+  merchant      Merchant?         // 如果是商家，关联商家信息
+  posts         Post[]            // 发布的曝光帖子
+  comments      Comment[]         // 发表的评论
+  reactions     Reaction[]        // 点赞/点踩记录
+  ratings       MerchantRating[]  // 商家评分记录
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  accountId         String
+  providerId        String
+  accessToken       String?
+  refreshToken      String?
+  idToken           String?
+  expiresAt         DateTime?
+  password          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@unique([identifier, value])
+}
+
+// ============================================================================
+// 商家系统
+// ============================================================================
+
+model Merchant {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  slug            String   @unique  // URL友好的标识
+  displayName     String              // 商家展示名称
+  category        String?             // 分类
+  location        String?             // 位置
+  description     String?  @db.Text   // 商家描述
+  avatarUrl       String?             // 商家头像
+  avatarColor     String?             // 头像背景色
+  responseTime    String?             // 平均响应时间
+  highlights      String[] @default([]) // 亮点标签
+  
+  // 统计字段（冗余存储提升性能）
+  averageRating   Float    @default(0)  // 平均评分
+  totalRatings    Int      @default(0)  // 总评分数
+  likesCount      Int      @default(0)  // 点赞总数
+  dislikesCount   Int      @default(0)  // 点踩总数
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // 关联
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ratings         MerchantRating[]  // 用户评分
+  reactions       Reaction[]        // 商家的点赞/点踩
+  
+  @@index([averageRating(sort: Desc)])
+  @@index([totalRatings(sort: Desc)])
+  @@index([createdAt])
+}
+
+model MerchantRating {
+  id          String   @id @default(cuid())
+  merchantId  String
+  userId      String
+  rating      Int      // 1-5星评分
+  comment     String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // 统计字段
+  likesCount    Int      @default(0)
+  dislikesCount Int      @default(0)
+  
+  // 关联
+  merchant    Merchant   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reactions   Reaction[] // 评论的点赞/点踩
+  
+  @@unique([merchantId, userId]) // 一个用户只能给一个商家评分一次
+  @@index([merchantId])
+  @@index([createdAt(sort: Desc)])
+}
+
+// ============================================================================
+// 曝光专区
+// ============================================================================
+
+model Post {
+  id            String   @id @default(cuid())
+  userId        String
+  title         String              // 帖子标题
+  content       String   @db.Text   // 帖子内容
+  tags          String[] @default([]) // 标签
+  
+  // 统计字段
+  likesCount    Int      @default(0)
+  dislikesCount Int      @default(0)
+  commentsCount Int      @default(0)
+  viewsCount    Int      @default(0) // 浏览次数
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // 关联
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images        Image[]    // 帖子图片
+  comments      Comment[]  // 评论
+  reactions     Reaction[] // 点赞/点踩
+  
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
+  @@index([likesCount(sort: Desc)])
+}
+
+model Image {
+  id        String   @id @default(cuid())
+  postId    String
+  url       String   @db.Text // 图片URL或base64
+  caption   String?  // 图片说明
+  order     Int      @default(0) // 显示顺序
+  createdAt DateTime @default(now())
+  
+  // 关联
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  @@index([postId])
+}
+
+// ============================================================================
+// 评论系统
+// ============================================================================
+
+enum CommentTargetType {
+  POST           // 曝光帖子
+  MERCHANT_RATING // 商家评分的回复（可选）
+}
+
+model Comment {
+  id            String   @id @default(cuid())
+  userId        String
+  content       String   @db.Text
+  
+  // 多态关联字段
+  targetType    CommentTargetType
+  postId        String?  // 如果是帖子评论
+  
+  // 统计字段
+  likesCount    Int      @default(0)
+  dislikesCount Int      @default(0)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // 关联
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post          Post?      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  reactions     Reaction[] // 评论的点赞/点踩
+  
+  @@index([postId])
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
+}
+
+// ============================================================================
+// 点赞/点踩系统（通用）
+// ============================================================================
+
+enum ReactionType {
+  LIKE
+  DISLIKE
+}
+
+enum ReactionTargetType {
+  MERCHANT        // 商家
+  MERCHANT_RATING // 商家评分
+  POST            // 帖子
+  COMMENT         // 评论
+}
+
+model Reaction {
+  id         String   @id @default(cuid())
+  userId     String
+  type       ReactionType // LIKE 或 DISLIKE
+  
+  // 多态关联字段
+  targetType ReactionTargetType
+  merchantId String?
+  ratingId   String?
+  postId     String?
+  commentId  String?
+  
+  createdAt  DateTime @default(now())
+  
+  // 关联
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  merchant   Merchant?        @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  rating     MerchantRating?  @relation(fields: [ratingId], references: [id], onDelete: Cascade)
+  post       Post?            @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment    Comment?         @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  
+  // 确保用户对同一目标只能有一个反应
+  @@unique([userId, targetType, merchantId])
+  @@unique([userId, targetType, ratingId])
+  @@unique([userId, targetType, postId])
+  @@unique([userId, targetType, commentId])
+  @@index([merchantId])
+  @@index([postId])
+  @@index([commentId])
+  @@index([ratingId])
+}
