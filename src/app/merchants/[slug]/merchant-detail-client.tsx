@@ -1,6 +1,13 @@
 "use client";
 
-import { useMemo, useRef, useState, type MouseEvent, type SVGProps } from "react";
+import {
+  type FormEvent,
+  useMemo,
+  useRef,
+  useState,
+  type MouseEvent,
+  type SVGProps,
+} from "react";
 import { animate } from "animejs";
 import Link from "next/link";
 
@@ -94,6 +101,24 @@ function ReviewIcon({ className, ...props }: IconProps) {
   );
 }
 
+function CloseIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M6 6l12 12" />
+      <path d="M18 6L6 18" />
+    </svg>
+  );
+}
+
 export function MerchantDetailClient({
   merchant,
 }: {
@@ -102,6 +127,8 @@ export function MerchantDetailClient({
   const [likes, setLikes] = useState(merchant.likes);
   const [dislikes, setDislikes] = useState(merchant.dislikes);
   const [userRating, setUserRating] = useState<number>(0);
+  const [isCommentFormOpen, setIsCommentFormOpen] = useState(false);
+  const [commentContent, setCommentContent] = useState("");
   const reviewSectionRef = useRef<HTMLDivElement>(null);
   const dateFormatter = useMemo(
     () =>
@@ -139,6 +166,26 @@ export function MerchantDetailClient({
 
   const handleScrollToReviews = () => {
     reviewSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleOpenCommentForm = () => {
+    setIsCommentFormOpen(true);
+  };
+
+  const handleCloseCommentForm = () => {
+    setIsCommentFormOpen(false);
+    setCommentContent("");
+  };
+
+  const handleCommentSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // 这里只是展示弹窗交互，后端存储可在未来接入
+    // eslint-disable-next-line no-console
+    console.log("提交评论", {
+      merchant: merchant.slug,
+      content: commentContent.trim(),
+    });
+    handleCloseCommentForm();
   };
 
   const likeCountLabel = likes.toLocaleString();
@@ -328,13 +375,66 @@ export function MerchantDetailClient({
 
         <button
           type="button"
-          onClick={handleScrollToReviews}
-          className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-sky-500 text-white shadow-xl shadow-sky-500/35 transition-colors transition-transform hover:scale-105 hover:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-          aria-label="查看用户评价"
+          onClick={handleOpenCommentForm}
+          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-sky-500 text-white shadow-xl shadow-sky-500/35 transition-colors transition-transform hover:scale-105 hover:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+          aria-label="发表评价"
         >
           <ReviewIcon className="h-6 w-6" aria-hidden="true" />
-          <span className="sr-only">跳转到用户评价</span>
+          <span className="sr-only">打开评价表单</span>
         </button>
+
+        {isCommentFormOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+            <div
+              className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
+              aria-hidden="true"
+              onClick={handleCloseCommentForm}
+            />
+
+            <Card
+              role="dialog"
+              aria-modal="true"
+              className="relative z-10 w-full max-w-lg border-border/40 bg-slate-900/90 p-2 backdrop-blur"
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg font-semibold text-foreground">发表评价</CardTitle>
+              </CardHeader>
+
+              <form onSubmit={handleCommentSubmit} className="space-y-4 p-4 pt-0">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground" htmlFor="comment-content">
+                    评论内容
+                  </label>
+                  <textarea
+                    id="comment-content"
+                    value={commentContent}
+                    onChange={(event) => setCommentContent(event.target.value)}
+                    placeholder="分享你的真实感受..."
+                    className="min-h-[160px] w-full resize-none rounded-lg border border-border/40 bg-slate-950/60 px-3 py-3 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:border-sky-400/80 focus:outline-none"
+                    required
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={handleCloseCommentForm}
+                    className="rounded-full border border-border/40 px-4 py-2 text-sm text-muted-foreground transition hover:border-border/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                  >
+                    取消
+                  </button>
+                  <button
+                    type="submit"
+                    className="rounded-full bg-sky-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                    disabled={commentContent.trim().length === 0}
+                  >
+                    提交评价
+                  </button>
+                </div>
+              </form>
+            </Card>
+          </div>
+        )}
       </main>
     </div>
   );
