@@ -29,6 +29,7 @@ import { ExposureCard } from "@/components/exposure/exposure-card";
 import { loadExposures, updateExposure, type Exposure } from "@/data/exposures";
 import { useSession, authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import Image from "next/image";
 
 const MAX_MAIN_SERVICE_ICONS = 3;
 const mainServiceIconsToDisplay = mainServiceIcons.slice(0, MAX_MAIN_SERVICE_ICONS);
@@ -455,11 +456,12 @@ export default function Home() {
                       <div className="mt-2 flex items-center gap-2 overflow-hidden">
                         {mainServiceIconsToDisplay.map((icon) => (
                           <div key={icon.src} className="flex flex-1 justify-center">
-                            <img
+                            <Image
                               src={icon.src}
                               alt={icon.alt}
+                              width={36}
+                              height={36}
                               className="h-9 w-9 flex-shrink-0 object-contain"
-                              loading="lazy"
                             />
                           </div>
                         ))}
@@ -557,7 +559,7 @@ export default function Home() {
               type="button"
               onClick={() => setShowExposureForm((previous) => !previous)}
               className={cn(
-                "fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full transition-transform transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
+                "fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
                 "shadow-xl shadow-rose-500/40",
                 "bg-rose-500 text-white hover:scale-105 hover:bg-rose-600",
               )}
