@@ -10,6 +10,7 @@ import {
 } from "react";
 import { animate } from "animejs";
 import Link from "next/link";
+import Image from "next/image";
 
 import { RatingDisplay } from "@/components/merchant/rating-display";
 import { StarRatingInput } from "@/components/merchant/star-rating-input";
@@ -323,11 +324,12 @@ export function MerchantDetailClient({
                       key={icon.src}
                       className="flex h-11 w-11 items-center justify-center rounded-xl border border-border/30 bg-white/[0.04]"
                     >
-                      <img
+                      <Image
                         src={icon.src}
                         alt={icon.alt}
+                        width={28}
+                        height={28}
                         className="h-7 w-7 shrink-0 object-contain"
-                        loading="lazy"
                       />
                     </div>
                   ))}
