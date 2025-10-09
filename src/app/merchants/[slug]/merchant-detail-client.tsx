@@ -262,9 +262,9 @@ export function MerchantDetailClient({
 
         <Card className="w-full border-border/40 bg-slate-900/70 backdrop-blur">
           <CardHeader className="gap-6 pb-0">
-            <div className="flex flex-wrap items-center gap-6">
+            <div className="flex items-start gap-6">
               <Avatar
-                className="h-16 w-16 text-xl"
+                className="h-16 w-16 shrink-0 text-xl"
                 style={{ background: merchant.avatarColor }}
               >
                 {merchant.avatarUrl ? (
@@ -274,17 +274,17 @@ export function MerchantDetailClient({
                 )}
               </Avatar>
 
-              <div className="space-y-3">
+              <div className="min-w-0 flex-1 space-y-3">
                 <div className="flex flex-wrap items-center gap-3">
-                  <Badge>{merchant.category}</Badge>
+                  <Badge className="shrink-0">{merchant.category}</Badge>
                   <span className="text-sm text-muted-foreground">
                     {merchant.location}
                   </span>
                 </div>
-                <CardTitle className="text-3xl font-semibold text-foreground">
+                <CardTitle className="break-words text-3xl font-semibold text-foreground">
                   {merchant.name}
                 </CardTitle>
-                <CardDescription className="text-base text-muted-foreground">
+                <CardDescription className="break-words text-base text-muted-foreground">
                   {merchant.description}
                 </CardDescription>
               </div>
@@ -437,7 +437,7 @@ export function MerchantDetailClient({
                     </CardHeader>
                     {rating.comment && (
                       <CardContent className="gap-2 pt-2 pb-1">
-                        <p className="text-sm leading-relaxed text-muted-foreground">
+                        <p className="break-words text-sm leading-relaxed text-muted-foreground">
                           {rating.comment}
                         </p>
                       </CardContent>
@@ -482,7 +482,7 @@ export function MerchantDetailClient({
                     </div>
                   </CardHeader>
                   <CardContent className="gap-2 pt-0 pb-1">
-                    <p className="text-sm leading-relaxed text-muted-foreground">
+                    <p className="break-words text-sm leading-relaxed text-muted-foreground">
                       {review.comment}
                     </p>
                   </CardContent>
