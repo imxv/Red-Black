@@ -52,6 +52,7 @@ type MerchantRecord = {
   avatarColor: string | null;
   description: string | null;
   highlights: string[] | null;
+  userReaction: string | null;
 };
 
 function LikeIcon({ className, ...props }: IconProps) {
@@ -186,6 +187,7 @@ export default function Home() {
           description: record.description ?? "",
           highlights: record.highlights ?? [],
           customerReviews: [],
+          userReaction: record.userReaction,
         }));
         setMerchantData((prev) => {
           const existing = new Set(prev.map((p) => p.slug));
@@ -210,33 +212,60 @@ export default function Home() {
   }, [activeSection]);
 
   const handleReaction = (
-    index: number,
-    field: "likes" | "dislikes",
-  ) => (event: MouseEvent<HTMLButtonElement>) => {
+    merchant: Merchant,
+    type: "LIKE" | "DISLIKE",
+  ) => async (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
 
-    setMerchantData((previous) =>
-      previous.map((merchant, merchantIndex) =>
-        merchantIndex === index
-          ? { ...merchant, [field]: merchant[field] + 1 }
-          : merchant,
-      ),
-    );
+    if (!session?.user) {
+      router.push("/auth/signin");
+      return;
+    }
 
-    animate(event.currentTarget, {
-      scale: [1, 1.12, 1],
-      duration: 280,
-      easing: "easeOutBack",
-    });
-
-    const iconElement = event.currentTarget.querySelector("svg");
-
-    if (iconElement) {
-      animate(iconElement, {
-        rotate: field === "likes" ? [0, -12, 0] : [0, 12, 0],
-        duration: 320,
-        easing: "easeOutQuad",
+    try {
+      const res = await fetch(`/api/merchants/${merchant.slug}/reactions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type }),
       });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error(data.error);
+        return;
+      }
+
+      setMerchantData((previous) =>
+        previous.map((m) =>
+          m.slug === merchant.slug
+            ? {
+                ...m,
+                likes: data.data.likesCount,
+                dislikes: data.data.dislikesCount,
+                userReaction: data.data.userReaction,
+              }
+            : m,
+        ),
+      );
+
+      animate(event.currentTarget, {
+        scale: [1, 1.12, 1],
+        duration: 280,
+        easing: "easeOutBack",
+      });
+
+      const iconElement = event.currentTarget.querySelector("svg");
+
+      if (iconElement) {
+        animate(iconElement, {
+          rotate: type === "LIKE" ? [0, -12, 0] : [0, 12, 0],
+          duration: 320,
+          easing: "easeOutQuad",
+        });
+      }
+    } catch (error) {
+      console.error("处理反应失败:", error);
     }
   };
 
@@ -406,7 +435,7 @@ export default function Home() {
         {/* 商家榜单内容 */}
         {activeSection === "merchants" && (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {merchantData.map((merchant, index) => (
+            {merchantData.map((merchant) => (
               <Card
                 key={merchant.name}
                 className={cn(
@@ -478,8 +507,14 @@ export default function Home() {
                   <div className="flex w-full flex-wrap items-center gap-3">
                     <button
                       type="button"
-                      onClick={handleReaction(index, "likes")}
-                      className="inline-flex cursor-pointer select-none items-center gap-1 rounded-full px-2 py-1 text-emerald-300/90 transition-colors hover:text-emerald-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                      onClick={handleReaction(merchant, "LIKE")}
+                      disabled={merchant.userReaction === "LIKE"}
+                      className={cn(
+                        "inline-flex select-none items-center gap-1 rounded-full px-2 py-1 text-emerald-300/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
+                        merchant.userReaction === "LIKE"
+                          ? "cursor-not-allowed opacity-50"
+                          : "cursor-pointer hover:text-emerald-200"
+                      )}
                       aria-label={`${merchant.name} 点赞`}
                     >
                       <LikeIcon className="like-icon h-4 w-4" aria-hidden="true" />
@@ -489,8 +524,14 @@ export default function Home() {
                     </button>
                     <button
                       type="button"
-                      onClick={handleReaction(index, "dislikes")}
-                      className="inline-flex cursor-pointer select-none items-center gap-1 rounded-full px-2 py-1 text-rose-300/90 transition-colors hover:text-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                      onClick={handleReaction(merchant, "DISLIKE")}
+                      disabled={merchant.userReaction === "DISLIKE"}
+                      className={cn(
+                        "inline-flex select-none items-center gap-1 rounded-full px-2 py-1 text-rose-300/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
+                        merchant.userReaction === "DISLIKE"
+                          ? "cursor-not-allowed opacity-50"
+                          : "cursor-pointer hover:text-rose-200"
+                      )}
                       aria-label={`${merchant.name} 点踩`}
                     >
                       <DislikeIcon className="dislike-icon h-4 w-4" aria-hidden="true" />

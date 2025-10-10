@@ -28,6 +28,7 @@ export type Merchant = {
   description: string;
   highlights: string[];
   customerReviews: MerchantReview[];
+  userReaction?: string | null;
 };
 
 export const merchants: Merchant[] = [
