@@ -30,7 +30,7 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-sky-600">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-gray-600 to-gray-800">
               <span className="text-lg font-bold text-white">红</span>
             </div>
             <span className="text-lg font-semibold text-foreground">爬宠红黑榜</span>
@@ -54,7 +54,7 @@ export function Navbar() {
                       {session.user.image && (
                         <AvatarImage src={session.user.image} alt={session.user.name || ""} />
                       )}
-                      <AvatarFallback className="bg-sky-500 text-white text-sm">
+                      <AvatarFallback className="bg-gray-600 text-white text-sm">
                         {getAvatarFallback(session.user.name, session.user.email)}
                       </AvatarFallback>
                     </Avatar>
@@ -123,7 +123,7 @@ export function Navbar() {
                     {session.user.image && (
                       <AvatarImage src={session.user.image} alt={session.user.name || ""} />
                     )}
-                    <AvatarFallback className="bg-sky-500 text-white text-sm">
+                    <AvatarFallback className="bg-gray-600 text-white text-sm">
                       {getAvatarFallback(session.user.name, session.user.email)}
                     </AvatarFallback>
                   </Avatar>

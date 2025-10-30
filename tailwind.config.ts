@@ -7,8 +7,8 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        display: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        serif: ["var(--font-noto-serif-sc)", "var(--font-noto-serif)", "serif"],
+        sans: ["var(--font-noto-serif-sc)", "var(--font-noto-serif)", "serif"],
         mono: ["var(--font-geist-mono)", "monospace"],
       },
       colors: {

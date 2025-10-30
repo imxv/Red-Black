@@ -4,16 +4,16 @@
 
 :root {
   color-scheme: dark;
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  --muted: 215 20% 65%;
-  --muted-foreground: 215 20% 65%;
-  --border: 217 32% 25%;
-  --accent: 199 88% 61%;
-  --accent-foreground: 210 40% 98%;
-  --success: 160 84% 39%;
-  --warning: 43 96% 56%;
-  --destructive: 0 84% 63%;
+  --background: 0 0% 4%;
+  --foreground: 0 0% 100%;
+  --muted: 0 0% 63%;
+  --muted-foreground: 0 0% 63%;
+  --border: 0 0% 16%;
+  --accent: 0 0% 95%;
+  --accent-foreground: 0 0% 10%;
+  --success: 0 0% 75%;
+  --warning: 0 0% 65%;
+  --destructive: 0 0% 50%;
   --radius: 0.75rem;
 }
 
@@ -23,16 +23,16 @@
   }
 
   body {
-    @apply bg-background text-foreground min-h-screen font-sans antialiased;
+    @apply bg-background text-foreground min-h-screen font-serif antialiased;
   }
 }
 
 @layer components {
   .rating {
     --rating-size: 1.75rem;
-    --rating-active: rgb(251 191 36 / 1);
-    --rating-hover: rgb(252 211 77 / 1);
-    --rating-inactive: rgb(148 163 184 / 0.45);
+    --rating-active: rgb(255 255 255 / 0.9);
+    --rating-hover: rgb(255 255 255 / 1);
+    --rating-inactive: rgb(100 100 100 / 0.45);
     display: inline-flex;
     align-items: center;
   }
@@ -71,7 +71,7 @@
   }
 
   .rating .mask:focus-visible {
-    outline: 2px solid rgb(125 211 252);
+    outline: 2px solid rgb(255 255 255 / 0.5);
     outline-offset: 2px;
   }
 

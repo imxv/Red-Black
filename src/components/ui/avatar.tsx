@@ -36,7 +36,7 @@ export function AvatarFallback({ className, ...props }: HTMLAttributes<HTMLDivEl
   return (
     <div
       className={cn(
-        "flex h-full w-full items-center justify-center bg-gradient-to-br from-white/70 to-white/40 text-base font-bold text-slate-900",
+        "flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-500 to-gray-700 text-base font-bold text-white",
         className,
       )}
       {...props}

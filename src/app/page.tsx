@@ -300,8 +300,8 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)]">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(59,130,246,0.18),_transparent_55%)]" />
+    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.03),_transparent_55%)]">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(255,255,255,0.02),_transparent_55%)]" />
 
       {/* 右上角登录/注册按钮 */}
       <div className="fixed top-6 right-6 z-50">
@@ -311,13 +311,13 @@ export default function Home() {
           <div className="relative">
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center gap-2 rounded-full border border-border/40 bg-slate-900/80 px-3 py-2 backdrop-blur-lg transition-all hover:border-sky-400/60 hover:bg-slate-900/90"
+              className="flex items-center gap-2 rounded-full border border-border/40 bg-slate-900/80 px-3 py-2 backdrop-blur-lg transition-all hover:border-white/60 hover:bg-slate-900/90"
             >
               <Avatar className="h-7 w-7">
                 {session.user.image && (
                   <AvatarImage src={session.user.image} alt={session.user.name || ""} />
                 )}
-                <AvatarFallback className="bg-sky-500 text-white text-xs">
+                <AvatarFallback className="bg-gray-600 text-white text-xs">
                   {getAvatarFallback(session.user.name, session.user.email)}
                 </AvatarFallback>
               </Avatar>
@@ -366,13 +366,13 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <Link
               href="/auth/signin"
-              className="rounded-full border border-border/40 bg-slate-900/80 px-5 py-2 text-sm text-foreground backdrop-blur-lg transition-all hover:border-sky-400/60 hover:bg-slate-900/90"
+              className="rounded-full border border-border/40 bg-slate-900/80 px-5 py-2 text-sm text-foreground backdrop-blur-lg transition-all hover:border-white/60 hover:bg-slate-900/90"
             >
               登录
             </Link>
             <Link
               href="/auth/signup"
-              className="rounded-full bg-sky-500 px-5 py-2 text-sm font-medium text-white transition-all hover:bg-sky-600 hover:scale-105 shadow-lg shadow-sky-500/30"
+              className="rounded-full bg-white px-5 py-2 text-sm font-medium text-black transition-all hover:bg-gray-200 hover:scale-105 shadow-lg shadow-white/20"
             >
               注册
             </Link>
@@ -400,7 +400,7 @@ export default function Home() {
               className={cn(
                 "rounded-lg px-6 py-2.5 text-sm font-medium transition-all",
                 activeSection === "merchants"
-                  ? "bg-sky-500 text-white shadow-lg shadow-sky-500/30"
+                  ? "bg-white text-black shadow-lg shadow-white/20"
                   : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground"
               )}
             >
@@ -418,7 +418,7 @@ export default function Home() {
               className={cn(
                 "rounded-lg px-6 py-2.5 text-sm font-medium transition-all",
                 activeSection === "exposures"
-                  ? "bg-rose-500 text-white shadow-lg shadow-rose-500/30"
+                  ? "bg-gray-700 text-white shadow-lg shadow-gray-700/30"
                   : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground"
               )}
             >
@@ -455,8 +455,7 @@ export default function Home() {
                 <CardHeader className="mb-4 flex flex-col gap-4">
                   <div className="flex items-center gap-4">
                     <Avatar
-                      className="h-14 w-14 text-lg"
-                      style={{ background: merchant.avatarColor }}
+                      className="h-14 w-14 text-lg bg-gray-700"
                     >
                       {merchant.avatarUrl ? (
                         <AvatarImage src={merchant.avatarUrl} alt={merchant.name} />
@@ -510,10 +509,10 @@ export default function Home() {
                       onClick={handleReaction(merchant, "LIKE")}
                       disabled={merchant.userReaction === "LIKE"}
                       className={cn(
-                        "inline-flex select-none items-center gap-1 rounded-full px-2 py-1 text-emerald-300/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
+                        "inline-flex select-none items-center gap-1 rounded-full px-2 py-1 text-gray-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
                         merchant.userReaction === "LIKE"
                           ? "cursor-not-allowed opacity-50"
-                          : "cursor-pointer hover:text-emerald-200"
+                          : "cursor-pointer hover:text-white"
                       )}
                       aria-label={`${merchant.name} 点赞`}
                     >
@@ -527,10 +526,10 @@ export default function Home() {
                       onClick={handleReaction(merchant, "DISLIKE")}
                       disabled={merchant.userReaction === "DISLIKE"}
                       className={cn(
-                        "inline-flex select-none items-center gap-1 rounded-full px-2 py-1 text-rose-300/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
+                        "inline-flex select-none items-center gap-1 rounded-full px-2 py-1 text-gray-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
                         merchant.userReaction === "DISLIKE"
                           ? "cursor-not-allowed opacity-50"
-                          : "cursor-pointer hover:text-rose-200"
+                          : "cursor-pointer hover:text-gray-300"
                       )}
                       aria-label={`${merchant.name} 点踩`}
                     >
@@ -540,7 +539,7 @@ export default function Home() {
                       </span>
                     </button>
                     <div className="flex items-center gap-1">
-                      <ReviewIcon className="h-4 w-4 text-sky-300/90" aria-hidden="true" />
+                      <ReviewIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />
                       <span className="font-medium text-foreground">
                         {merchant.reviews.toLocaleString()} 条
                       </span>
@@ -601,8 +600,8 @@ export default function Home() {
               onClick={() => setShowExposureForm((previous) => !previous)}
               className={cn(
                 "fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
-                "shadow-xl shadow-rose-500/40",
-                "bg-rose-500 text-white hover:scale-105 hover:bg-rose-600",
+                "shadow-xl shadow-gray-700/40",
+                "bg-gray-700 text-white hover:scale-105 hover:bg-gray-600",
               )}
               aria-label={showExposureForm ? "取消提交曝光" : "提交曝光"}
             >

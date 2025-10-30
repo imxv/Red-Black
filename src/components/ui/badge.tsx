@@ -6,17 +6,17 @@ type BadgeVariant = "default" | "secondary" | "outline" | "success" | "warning" 
 
 const variantClassMap: Record<BadgeVariant, string> = {
   default:
-    "border border-accent/40 bg-accent/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent-foreground shadow-sm backdrop-blur transition-colors",
+    "border-2 border-white/60 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-sm backdrop-blur transition-colors",
   secondary:
-    "border border-border/60 bg-muted/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground/80 shadow-sm backdrop-blur transition-colors",
+    "border border-white/40 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground/80 shadow-sm backdrop-blur transition-colors",
   outline:
-    "border border-border/70 bg-transparent px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground/90",
+    "border border-white/50 bg-transparent px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground/90",
   success:
-    "border border-success/30 bg-success/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-success",
+    "border border-white/40 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/90",
   warning:
-    "border border-warning/30 bg-warning/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-warning",
+    "border border-gray-500/60 bg-gray-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-300",
   destructive:
-    "border border-destructive/30 bg-destructive/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-destructive",
+    "border border-gray-600/60 bg-gray-600/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-400",
 };
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {

@@ -249,12 +249,12 @@ export function MerchantDetailClient({
   const dislikeCountLabel = dislikes.toLocaleString();
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)]">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(59,130,246,0.18),_transparent_55%)]" />
+    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.03),_transparent_55%)]">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(255,255,255,0.02),_transparent_55%)]" />
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-12 pb-24 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="group inline-flex w-fit items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 py-2 text-sm text-slate-200 transition hover:border-sky-400/60 hover:text-sky-100"
+          className="group inline-flex w-fit items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 py-2 text-sm text-slate-200 transition hover:border-white/60 hover:text-white"
         >
           <BackIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           返回榜单
@@ -343,7 +343,7 @@ export function MerchantDetailClient({
             <button
               type="button"
               onClick={handleReaction("likes")}
-              className="inline-flex cursor-pointer select-none items-center gap-2 rounded-full border border-emerald-400/30 px-3 py-1.5 text-emerald-300/90 transition-colors hover:border-emerald-300/50 hover:text-emerald-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+              className="inline-flex cursor-pointer select-none items-center gap-2 rounded-full border border-gray-500/40 px-3 py-1.5 text-gray-300 transition-colors hover:border-white/50 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
               aria-label={`${merchant.name} 点赞`}
             >
               <LikeIcon className="h-4 w-4" aria-hidden="true" />
@@ -352,7 +352,7 @@ export function MerchantDetailClient({
             <button
               type="button"
               onClick={handleReaction("dislikes")}
-              className="inline-flex cursor-pointer select-none items-center gap-2 rounded-full border border-rose-400/30 px-3 py-1.5 text-rose-300/90 transition-colors hover:border-rose-300/50 hover:text-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+              className="inline-flex cursor-pointer select-none items-center gap-2 rounded-full border border-gray-600/40 px-3 py-1.5 text-gray-500 transition-colors hover:border-gray-400/50 hover:text-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
               aria-label={`${merchant.name} 点踩`}
             >
               <DislikeIcon className="h-4 w-4" aria-hidden="true" />
@@ -361,7 +361,7 @@ export function MerchantDetailClient({
             <button
               type="button"
               onClick={handleScrollToReviews}
-              className="inline-flex cursor-pointer select-none items-center gap-2 rounded-full border border-sky-400/30 px-3 py-1.5 text-sky-200 transition-colors hover:border-sky-300/50 hover:text-sky-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+              className="inline-flex cursor-pointer select-none items-center gap-2 rounded-full border border-gray-500/40 px-3 py-1.5 text-gray-300 transition-colors hover:border-white/50 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
               aria-label={`${merchant.name} 查看用户评价`}
             >
               <ReviewIcon className="h-4 w-4" aria-hidden="true" />
@@ -426,7 +426,7 @@ export function MerchantDetailClient({
                                   </svg>
                                 );
                               })}
-                              <span className="ml-1 text-xs text-amber-400">{rating.rating.toFixed(1)}</span>
+                                  <span className="ml-1 text-xs text-white">{rating.rating.toFixed(1)}</span>
                             </div>
                           </div>
                           <span className="text-xs text-muted-foreground">
@@ -443,9 +443,9 @@ export function MerchantDetailClient({
                       </CardContent>
                     )}
                     <CardFooter className="mt-1 w-full justify-end gap-2 border-t border-border/30 pt-2">
-                      <div className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
+                        <div className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1.5">
-                          <LikeIcon className="h-3.5 w-3.5 text-emerald-300/90" aria-hidden="true" />
+                          <LikeIcon className="h-3.5 w-3.5 text-gray-400" aria-hidden="true" />
                           <span>
                             点赞 <span className="text-foreground font-medium">{rating.likesCount.toLocaleString()}</span>
                           </span>
@@ -487,15 +487,15 @@ export function MerchantDetailClient({
                     </p>
                   </CardContent>
                   <CardFooter className="mt-1 w-full justify-end gap-2 border-t border-border/30 pt-2">
-                    <div className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
+                      <div className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
                       <div className="flex items-center gap-1.5">
-                        <LikeIcon className="h-3.5 w-3.5 text-emerald-300/90" aria-hidden="true" />
+                        <LikeIcon className="h-3.5 w-3.5 text-gray-400" aria-hidden="true" />
                         <span>
                           点赞 <span className="text-foreground font-medium">{review.likes.toLocaleString()}</span>
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <ReviewIcon className="h-3.5 w-3.5 text-sky-300/90" aria-hidden="true" />
+                        <ReviewIcon className="h-3.5 w-3.5 text-gray-400" aria-hidden="true" />
                         <span>
                           回复 <span className="text-foreground font-medium">{review.replies.toLocaleString()}</span>
                         </span>
@@ -511,7 +511,7 @@ export function MerchantDetailClient({
         <button
           type="button"
           onClick={handleOpenCommentForm}
-          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-sky-500 text-white shadow-xl shadow-sky-500/35 transition-all hover:scale-105 hover:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-white text-black shadow-xl shadow-white/30 transition-all hover:scale-105 hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           aria-label="发表评价"
         >
           <ReviewIcon className="h-6 w-6" aria-hidden="true" />
@@ -538,7 +538,7 @@ export function MerchantDetailClient({
               <form onSubmit={handleCommentSubmit} className="space-y-4 p-4 pt-0">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">
-                    评分 {userRating > 0 && <span className="text-sky-400">({userRating.toFixed(1)} 分)</span>}
+                    评分 {userRating > 0 && <span className="text-white">({userRating.toFixed(1)} 分)</span>}
                   </label>
                   <div className="flex items-center gap-2">
                     <StarRatingInput value={userRating} onChange={setUserRating} />
@@ -557,7 +557,7 @@ export function MerchantDetailClient({
                     value={commentContent}
                     onChange={(event) => setCommentContent(event.target.value)}
                     placeholder="分享你的真实感受..."
-                    className="min-h-[160px] w-full resize-none rounded-lg border border-border/40 bg-slate-950/60 px-3 py-3 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:border-sky-400/80 focus:outline-none"
+                    className="min-h-[160px] w-full resize-none rounded-lg border border-border/40 bg-slate-950/60 px-3 py-3 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:border-white/80 focus:outline-none"
                     required
                   />
                 </div>
@@ -573,7 +573,7 @@ export function MerchantDetailClient({
                   </button>
                   <button
                     type="submit"
-                    className="rounded-full bg-sky-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
                     disabled={commentContent.trim().length === 0 || userRating === 0 || isSubmitting}
                   >
                     {isSubmitting ? "提交中..." : "提交评价"}

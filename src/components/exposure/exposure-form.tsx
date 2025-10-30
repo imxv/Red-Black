@@ -95,7 +95,7 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
           {/* 昵称 */}
           <div>
             <label htmlFor="submitter" className="mb-2 block text-sm font-medium text-foreground">
-              您的昵称 <span className="text-rose-400">*</span>
+              您的昵称 <span className="text-gray-400">*</span>
             </label>
             <input
               id="submitter"
@@ -117,7 +117,7 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
           {/* 标题 */}
           <div>
             <label htmlFor="title" className="mb-2 block text-sm font-medium text-foreground">
-              标题 <span className="text-rose-400">*</span>
+              标题 <span className="text-gray-400">*</span>
             </label>
             <input
               id="title"
@@ -129,7 +129,7 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
               className={cn(
                 "w-full rounded-lg border border-border/40 bg-white/[0.02] px-4 py-2.5 text-sm text-foreground",
                 "placeholder:text-muted-foreground",
-                "focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20",
+                "focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20",
                 "transition-colors"
               )}
               required
@@ -142,7 +142,7 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
           {/* 详细描述 */}
           <div>
             <label htmlFor="description" className="mb-2 block text-sm font-medium text-foreground">
-              详细描述 <span className="text-rose-400">*</span>
+              详细描述 <span className="text-gray-400">*</span>
             </label>
             <textarea
               id="description"
@@ -154,7 +154,7 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
               className={cn(
                 "w-full rounded-lg border border-border/40 bg-white/[0.02] px-4 py-2.5 text-sm text-foreground",
                 "placeholder:text-muted-foreground",
-                "focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20",
+                "focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20",
                 "transition-colors resize-none"
               )}
               required
@@ -202,9 +202,9 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
           type="submit"
           disabled={isSubmitting}
           className={cn(
-            "rounded-lg bg-sky-500 px-6 py-2.5 text-sm font-medium text-white",
-            "transition-colors hover:bg-sky-600",
-            "focus:outline-none focus:ring-2 focus:ring-sky-400/20",
+            "rounded-lg bg-white px-6 py-2.5 text-sm font-medium text-black",
+            "transition-colors hover:bg-gray-200",
+            "focus:outline-none focus:ring-2 focus:ring-white/20",
             "disabled:cursor-not-allowed disabled:opacity-50"
           )}
         >
@@ -213,10 +213,10 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
       </div>
 
       {/* 提示信息 */}
-      <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-4">
+      <div className="rounded-lg border border-gray-500/20 bg-gray-500/10 p-4">
         <div className="flex gap-3">
           <svg
-            className="h-5 w-5 flex-shrink-0 text-amber-400"
+            className="h-5 w-5 flex-shrink-0 text-gray-400"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -228,7 +228,7 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
             />
           </svg>
-          <div className="flex-1 text-sm text-amber-200/90">
+          <div className="flex-1 text-sm text-gray-300">
             <p className="font-medium">温馨提示</p>
             <ul className="mt-2 list-inside list-disc space-y-1 text-xs">
               <li>请确保提供的信息真实有效，虚假曝光将被删除</li>

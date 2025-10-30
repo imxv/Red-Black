@@ -11,10 +11,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "default", size = "default", ...props }, ref) => {
     const variantClasses = 
       variant === "default"
-        ? "bg-sky-500 text-white hover:bg-sky-600 focus-visible:ring-sky-500"
+        ? "bg-white text-black hover:bg-gray-200 focus-visible:ring-white/50"
         : variant === "outline"
-        ? "border border-border/40 bg-transparent hover:bg-white/[0.08] focus-visible:ring-sky-500"
-        : "hover:bg-white/[0.08] focus-visible:ring-sky-500";
+        ? "border border-border/40 bg-transparent hover:bg-white/[0.08] focus-visible:ring-white/50"
+        : "hover:bg-white/[0.08] focus-visible:ring-white/50";
     
     const sizeClasses =
       size === "default"

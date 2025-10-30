@@ -63,7 +63,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
       >
         <CardHeader className="relative mb-4 flex items-start gap-3 p-0">
           <div className="flex items-center gap-3 pr-16">
-            <Avatar className="h-10 w-10 text-sm bg-sky-500">
+            <Avatar className="h-10 w-10 text-sm bg-gray-600">
               <AvatarFallback>{exposure.submitterAvatar}</AvatarFallback>
             </Avatar>
 
@@ -185,7 +185,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
               <button
                 type="button"
                 onClick={handleReaction("like", onLike)}
-                className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-emerald-300/90 transition-colors hover:text-emerald-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60"
+                className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-gray-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
                 aria-label="支持"
               >
                 <svg
@@ -207,7 +207,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
               <button
                 type="button"
                 onClick={handleReaction("dislike", onDislike)}
-                className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-rose-300/90 transition-colors hover:text-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60"
+                className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-gray-500 transition-colors hover:text-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
                 aria-label="质疑"
               >
                 <svg
@@ -228,7 +228,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
 
               <div className="flex items-center gap-1.5">
                 <svg
-                  className="h-4 w-4 text-sky-300/90"
+                  className="h-4 w-4 text-gray-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
