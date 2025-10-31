@@ -190,7 +190,7 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="请详细描述您遇到的问题，包括时间、地点、经过等信息，以帮助其他玩家了解情况（至少 20 字）"
+              placeholder="请详细描述您遇到的问题，包括时间、地点、经过等信息，以帮助其他玩家了解情况（至少 15 字）"
               rows={6}
               maxLength={2000}
               className={cn(
