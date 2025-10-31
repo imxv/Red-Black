@@ -4,7 +4,6 @@ import { type FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import { ImageUpload } from "@/components/ui/image-upload";
-import { addExposure, type ExposureImage } from "@/data/exposures";
 import { cn } from "@/lib/utils";
 
 type ImageFile = {
@@ -85,26 +84,29 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
 
     try {
       // 转换图片数据 - 只使用上传成功的图片
-      const exposureImages: ExposureImage[] = images
+      const imageUrls = images
         .filter(img => img.uploadStatus === 'success' && img.remoteUrl)
-        .map((img) => ({
-          id: img.id,
-          url: img.remoteUrl!, // 使用远程 URL
-        }));
+        .map(img => img.remoteUrl!);
 
-      // 获取用户信息
-      const submitterName = session.user.name || session.user.email || "匿名用户";
-      const avatarFallback = getAvatarFallback(session.user.name, session.user.email);
-
-      // 添加曝光
-      addExposure({
-        title: title.trim(),
-        description: description.trim(),
-        images: exposureImages,
-        submitter: submitterName,
-        submitterAvatar: avatarFallback,
-        tags: [],
+      // 调用API创建曝光帖子
+      const response = await fetch("/api/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: title.trim(),
+          content: description.trim(),
+          tags: [],
+          images: imageUrls,
+        }),
       });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "提交失败");
+      }
 
       // 重置表单
       setTitle("");
@@ -117,7 +119,7 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
       onSubmitSuccess?.();
     } catch (error) {
       console.error("Failed to submit exposure:", error);
-      alert("提交失败，请稍后重试");
+      alert(error instanceof Error ? error.message : "提交失败，请稍后重试");
     } finally {
       setIsSubmitting(false);
     }

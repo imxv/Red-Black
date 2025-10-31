@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { Exposure } from "@/data/exposures";
+import { CommentInput } from "./comment-input";
+import { CommentList } from "./comment-list";
 
 type ExposureCardProps = {
   exposure: Exposure;
@@ -17,6 +19,8 @@ type ExposureCardProps = {
 export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [commentRefreshTrigger, setCommentRefreshTrigger] = useState(0);
 
   const handleReaction = (
     type: "like" | "dislike",
@@ -242,9 +246,34 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
                   {exposure.comments.length}
                 </span>
               </div>
+
+              <button
+                type="button"
+                onClick={() => setShowComments(!showComments)}
+                className={cn(
+                  "ml-auto text-xs text-slate-600 hover:text-slate-900",
+                  "transition-colors underline"
+                )}
+              >
+                {showComments ? "收起评论" : "查看评论"}
+              </button>
             </div>
           </div>
         </CardFooter>
+
+        {/* 评论区域 */}
+        {showComments && (
+          <div className="border-t border-border/40 px-6 py-4 space-y-4 bg-slate-50/50">
+            <CommentInput
+              postId={exposure.id}
+              onCommentAdded={() => setCommentRefreshTrigger(prev => prev + 1)}
+            />
+            <CommentList
+              postId={exposure.id}
+              refreshTrigger={commentRefreshTrigger}
+            />
+          </div>
+        )}
       </Card>
 
       {/* 图片查看器模态框 */}

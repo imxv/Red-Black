@@ -26,7 +26,7 @@ import { merchants as merchantSource, type Merchant } from "@/data/merchants";
 import { mainServiceIcons } from "@/data/main-services";
 import { ExposureForm } from "@/components/exposure/exposure-form";
 import { ExposureCard } from "@/components/exposure/exposure-card";
-import { loadExposures, updateExposure, type Exposure } from "@/data/exposures";
+import { type Exposure } from "@/data/exposures";
 import { useSession, authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import Image from "next/image";
@@ -207,9 +207,52 @@ export default function Home() {
   // 加载曝光数据
   useEffect(() => {
     if (activeSection === "exposures") {
-      setExposureData(loadExposures());
+      fetchExposures();
     }
   }, [activeSection]);
+
+  const fetchExposures = async () => {
+    try {
+      const response = await fetch("/api/posts");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "获取曝光列表失败");
+      }
+
+      // 转换API数据为前端期望的格式
+      const formattedExposures: Exposure[] = (data.data || []).map((post: {
+        id: string;
+        title: string;
+        content: string;
+        createdAt: string;
+        likesCount: number;
+        dislikesCount: number;
+        tags: string[];
+        user: { name: string | null; email: string | null };
+        images: { id: string; url: string }[];
+      }) => ({
+        id: post.id,
+        title: post.title,
+        description: post.content,
+        submitter: post.user.name || post.user.email || "匿名用户",
+        submitterAvatar: post.user.name ? post.user.name.charAt(0).toUpperCase() : "U",
+        createdAt: new Date(post.createdAt).toLocaleDateString("zh-CN"),
+        likes: post.likesCount || 0,
+        dislikes: post.dislikesCount || 0,
+        images: (post.images || []).map((img: { id: string; url: string }) => ({
+          id: img.id,
+          url: img.url,
+        })),
+        tags: post.tags || [],
+        comments: [], // 评论数通过 commentsCount 获取
+      }));
+
+      setExposureData(formattedExposures);
+    } catch (error) {
+      console.error("加载曝光列表失败:", error);
+    }
+  };
 
   const handleReaction = (
     merchant: Merchant,
@@ -269,19 +312,37 @@ export default function Home() {
     }
   };
 
-  const handleExposureReaction = (id: string, field: "likes" | "dislikes") => {
-    const exposures = loadExposures();
-    const exposure = exposures.find((exp) => exp.id === id);
+  const handleExposureReaction = async (id: string, type: "LIKE" | "DISLIKE") => {
+    if (!session?.user) {
+      router.push("/auth/signin");
+      return;
+    }
 
-    if (exposure) {
-      const updatedValue = exposure[field] + 1;
-      updateExposure(id, { [field]: updatedValue });
-      setExposureData(loadExposures());
+    try {
+      const response = await fetch(`/api/posts/${id}/reactions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ type }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error(data.error);
+        return;
+      }
+
+      // 重新加载曝光列表以获取最新的点赞/点踩数据
+      await fetchExposures();
+    } catch (error) {
+      console.error("处理反应失败:", error);
     }
   };
 
-  const handleExposureSubmitSuccess = () => {
-    setExposureData(loadExposures());
+  const handleExposureSubmitSuccess = async () => {
+    await fetchExposures();
     setShowExposureForm(false);
     // 滚动到顶部查看新提交的曝光
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -567,8 +628,8 @@ export default function Home() {
                   <ExposureCard
                     key={exposure.id}
                     exposure={exposure}
-                    onLike={(id) => handleExposureReaction(id, "likes")}
-                    onDislike={(id) => handleExposureReaction(id, "dislikes")}
+                    onLike={(id) => handleExposureReaction(id, "LIKE")}
+                    onDislike={(id) => handleExposureReaction(id, "DISLIKE")}
                   />
                 ))}
               </div>
