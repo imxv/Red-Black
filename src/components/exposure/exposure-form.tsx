@@ -1,6 +1,8 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { addExposure, type ExposureImage } from "@/data/exposures";
 import { cn } from "@/lib/utils";
@@ -15,15 +17,30 @@ type ExposureFormProps = {
   onSubmitSuccess?: () => void;
 };
 
+// 获取头像 fallback 字符
+const getAvatarFallback = (name?: string | null, email?: string | null) => {
+  if (name) return name.charAt(0).toUpperCase();
+  if (email) return email.charAt(0).toUpperCase();
+  return "U";
+};
+
 export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
+  const router = useRouter();
+  const { data: session, isPending } = useSession();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [submitter, setSubmitter] = useState("");
   const [images, setImages] = useState<ImageFile[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    // 检查用户是否已登录
+    if (!session?.user) {
+      alert("请先登录后再提交曝光信息");
+      router.push("/auth/signin");
+      return;
+    }
 
     // 表单验证
     if (!title.trim()) {
@@ -36,13 +53,8 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
       return;
     }
 
-    if (!submitter.trim()) {
-      alert("请输入您的昵称");
-      return;
-    }
-
-    if (description.trim().length < 20) {
-      alert("描述至少需要 20 个字");
+    if (description.trim().length < 15) {
+      alert("描述至少需要 15 个字");
       return;
     }
 
@@ -55,15 +67,16 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
         url: img.url,
       }));
 
-      // 提取首字作为头像
-      const avatarFallback = submitter.trim().charAt(0);
+      // 获取用户信息
+      const submitterName = session.user.name || session.user.email || "匿名用户";
+      const avatarFallback = getAvatarFallback(session.user.name, session.user.email);
 
       // 添加曝光
       addExposure({
         title: title.trim(),
         description: description.trim(),
         images: exposureImages,
-        submitter: submitter.trim(),
+        submitter: submitterName,
         submitterAvatar: avatarFallback,
         tags: [],
       });
@@ -71,7 +84,6 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
       // 重置表单
       setTitle("");
       setDescription("");
-      setSubmitter("");
       setImages([]);
 
       alert("提交成功！感谢您的曝光，帮助更多人避坑。");
@@ -91,29 +103,59 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
       <div className="rounded-2xl border border-border/40 bg-white p-6 backdrop-blur-lg">
         <h3 className="mb-6 text-lg font-semibold text-foreground">提交曝光信息</h3>
 
-        <div className="space-y-5">
-          {/* 昵称 */}
-          <div>
-            <label htmlFor="submitter" className="mb-2 block text-sm font-medium text-foreground">
-              您的昵称 <span className="text-slate-400">*</span>
-            </label>
-            <input
-              id="submitter"
-              type="text"
-              value={submitter}
-              onChange={(e) => setSubmitter(e.target.value)}
-              placeholder="输入您的昵称"
-              maxLength={20}
-              className={cn(
-                "w-full rounded-lg border border-border/40 bg-slate-900/[0.02] px-4 py-2.5 text-sm text-foreground",
-                "placeholder:text-muted-foreground",
-                "focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20",
-                "transition-colors"
-              )}
-              required
-            />
+        {/* 用户登录状态提示 */}
+        {isPending ? (
+          <div className="mb-5 rounded-lg border border-border/40 bg-slate-50 p-4">
+            <p className="text-sm text-muted-foreground">加载用户信息中...</p>
           </div>
+        ) : !session?.user ? (
+          <div className="mb-5 rounded-lg border border-amber-500/20 bg-amber-500/10 p-4">
+            <div className="flex gap-3">
+              <svg
+                className="h-5 w-5 flex-shrink-0 text-amber-700"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-amber-900">需要登录</p>
+                <p className="mt-1 text-xs text-amber-800">
+                  提交曝光信息需要先登录账号。
+                  <button
+                    type="button"
+                    onClick={() => router.push("/auth/signin")}
+                    className="ml-1 underline hover:text-amber-900"
+                  >
+                    立即登录
+                  </button>
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="mb-5 rounded-lg border border-sky-500/20 bg-sky-500/10 p-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-200 text-sm font-semibold text-sky-900">
+                {getAvatarFallback(session.user.name, session.user.email)}
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-sky-900">
+                  将以 <span className="font-semibold">{session.user.name || session.user.email}</span> 的身份提交
+                </p>
+                <p className="text-xs text-sky-800">您的曝光信息将关联到此账号</p>
+              </div>
+            </div>
+          </div>
+        )}
 
+        <div className="space-y-5">
           {/* 标题 */}
           <div>
             <label htmlFor="title" className="mb-2 block text-sm font-medium text-foreground">
@@ -185,7 +227,6 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
             if (confirm("确定要重置表单吗？")) {
               setTitle("");
               setDescription("");
-              setSubmitter("");
               setImages([]);
             }
           }}
@@ -200,7 +241,7 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !session?.user}
             className={cn(
               "rounded-lg bg-slate-900 px-6 py-2.5 text-sm font-medium text-white",
               "transition-colors hover:bg-slate-800",
