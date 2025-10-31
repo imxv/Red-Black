@@ -6,17 +6,17 @@ type BadgeVariant = "default" | "secondary" | "outline" | "success" | "warning" 
 
 const variantClassMap: Record<BadgeVariant, string> = {
   default:
-    "border-2 border-white/60 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-sm backdrop-blur transition-colors",
+    "border-2 border-slate-400/60 bg-slate-900/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-900 shadow-sm backdrop-blur transition-colors",
   secondary:
-    "border border-white/40 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground/80 shadow-sm backdrop-blur transition-colors",
+    "border border-slate-300/40 bg-slate-900/5 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground/80 shadow-sm backdrop-blur transition-colors",
   outline:
-    "border border-white/50 bg-transparent px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground/90",
+    "border border-slate-400/50 bg-transparent px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground/90",
   success:
-    "border border-white/40 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/90",
+    "border border-green-400/40 bg-green-900/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-green-900/90",
   warning:
-    "border border-gray-500/60 bg-gray-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-300",
+    "border border-amber-500/60 bg-amber-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-900",
   destructive:
-    "border border-gray-600/60 bg-gray-600/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-400",
+    "border border-red-600/60 bg-red-600/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-900",
 };
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {

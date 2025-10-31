@@ -25,13 +25,13 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/40 bg-slate-900/80 backdrop-blur-lg">
+    <nav className="sticky top-0 z-50 border-b border-border/40 bg-white/95 backdrop-blur-lg">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-gray-600 to-gray-800">
-              <span className="text-lg font-bold text-white">红</span>
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-slate-200 to-slate-400">
+              <span className="text-lg font-bold text-slate-900">红</span>
             </div>
             <span className="text-lg font-semibold text-foreground">爬宠红黑榜</span>
           </Link>
@@ -39,7 +39,7 @@ export function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-4">
             {isPending ? (
-              <div className="h-8 w-24 animate-pulse rounded-lg bg-white/5" />
+              <div className="h-8 w-24 animate-pulse rounded-lg bg-slate-900/5" />
             ) : session?.user ? (
               <div className="flex items-center space-x-3">
                 <span className="text-sm text-muted-foreground">
@@ -48,13 +48,13 @@ export function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="flex items-center space-x-2 rounded-lg p-1 hover:bg-white/5 transition-colors"
+                    className="flex items-center space-x-2 rounded-lg p-1 hover:bg-slate-100 transition-colors"
                   >
                     <Avatar className="h-8 w-8">
                       {session.user.image && (
                         <AvatarImage src={session.user.image} alt={session.user.name || ""} />
                       )}
-                      <AvatarFallback className="bg-gray-600 text-white text-sm">
+                      <AvatarFallback className="bg-slate-200 text-slate-900 text-sm">
                         {getAvatarFallback(session.user.name, session.user.email)}
                       </AvatarFallback>
                     </Avatar>
@@ -67,7 +67,7 @@ export function Navbar() {
                         className="fixed inset-0 z-10"
                         onClick={() => setIsMenuOpen(false)}
                       />
-                      <div className="absolute right-0 mt-2 w-48 rounded-lg border border-border/40 bg-slate-900 py-2 shadow-xl z-20">
+                      <div className="absolute right-0 mt-2 w-48 rounded-lg border border-border/40 bg-white py-2 shadow-xl z-20">
                         <div className="px-4 py-2 border-b border-border/40">
                           <p className="text-sm font-medium text-foreground truncate">
                             {session.user.name || "用户"}
@@ -81,7 +81,7 @@ export function Navbar() {
                             setIsMenuOpen(false);
                             router.push("/settings");
                           }}
-                          className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-white/5 transition-colors"
+                          className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-slate-100 transition-colors"
                         >
                           个人设置
                         </button>
@@ -90,7 +90,7 @@ export function Navbar() {
                             setIsMenuOpen(false);
                             handleSignOut();
                           }}
-                          className="w-full px-4 py-2 text-left text-sm text-rose-400 hover:bg-white/5 transition-colors"
+                          className="w-full px-4 py-2 text-left text-sm text-rose-600 hover:bg-slate-100 transition-colors"
                         >
                           退出登录
                         </button>
@@ -117,13 +117,13 @@ export function Navbar() {
               session?.user ? (
                 <button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="rounded-lg p-2 hover:bg-white/5 transition-colors"
+                  className="rounded-lg p-2 hover:bg-slate-100 transition-colors"
                 >
                   <Avatar className="h-8 w-8">
                     {session.user.image && (
                       <AvatarImage src={session.user.image} alt={session.user.name || ""} />
                     )}
-                    <AvatarFallback className="bg-gray-600 text-white text-sm">
+                    <AvatarFallback className="bg-slate-200 text-slate-900 text-sm">
                       {getAvatarFallback(session.user.name, session.user.email)}
                     </AvatarFallback>
                   </Avatar>
@@ -145,7 +145,7 @@ export function Navbar() {
             className="fixed inset-0 z-10 md:hidden"
             onClick={() => setIsMenuOpen(false)}
           />
-          <div className="absolute right-4 mt-2 w-64 rounded-lg border border-border/40 bg-slate-900 py-2 shadow-xl z-20 md:hidden">
+          <div className="absolute right-4 mt-2 w-64 rounded-lg border border-border/40 bg-white py-2 shadow-xl z-20 md:hidden">
             <div className="px-4 py-3 border-b border-border/40">
               <p className="text-sm font-medium text-foreground truncate">
                 {session.user.name || "用户"}
@@ -159,7 +159,7 @@ export function Navbar() {
                 setIsMenuOpen(false);
                 router.push("/settings");
               }}
-              className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-white/5 transition-colors"
+              className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-slate-100 transition-colors"
             >
               个人设置
             </button>
@@ -168,7 +168,7 @@ export function Navbar() {
                 setIsMenuOpen(false);
                 handleSignOut();
               }}
-              className="w-full px-4 py-2 text-left text-sm text-rose-400 hover:bg-white/5 transition-colors"
+              className="w-full px-4 py-2 text-left text-sm text-rose-600 hover:bg-slate-100 transition-colors"
             >
               退出登录
             </button>

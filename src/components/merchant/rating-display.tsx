@@ -67,13 +67,13 @@ export function RatingDisplay({
 
             return (
               <div key={index} className={`relative ${starClassName}`}>
-                <StarIcon className="h-full w-full text-gray-600" />
+                <StarIcon className="h-full w-full text-slate-300" />
                 {fill > 0 && (
                   <div
                     className="absolute inset-0 overflow-hidden"
                     style={{ width: `${fill}%` }}
                   >
-                    <StarIcon className="h-full w-full text-white" filled />
+                    <StarIcon className="h-full w-full text-amber-500" filled />
                   </div>
                 )}
               </div>

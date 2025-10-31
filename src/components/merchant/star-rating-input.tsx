@@ -46,7 +46,7 @@ export function StarRatingInput({ value, onChange, max = 5 }: StarRatingInputPro
             checked={value === step}
             onChange={() => onChange(step)}
             className={cn(
-              "mask mask-star-2 bg-white/80 transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+              "mask mask-star-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
               isFirstHalf ? "mask-half-1" : "mask-half-2",
             )}
           />

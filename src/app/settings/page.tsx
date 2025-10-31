@@ -61,7 +61,7 @@ export default function SettingsPage() {
     <div className="mx-auto max-w-3xl p-6 text-foreground">
       <Link
         href="/"
-        className="group mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 py-2 text-sm text-slate-200 transition hover:border-sky-400/60 hover:text-sky-100"
+        className="group mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-foreground transition hover:border-sky-400/60 hover:text-sky-600"
       >
         <BackIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
         返回首页
@@ -69,14 +69,14 @@ export default function SettingsPage() {
 
       <h1 className="mb-6 text-2xl font-semibold">个人设置</h1>
 
-      <div className="mb-8 rounded-xl border border-border/40 bg-slate-900/70 p-5">
+      <div className="mb-8 rounded-xl border border-border/40 bg-white p-5">
         <div className="space-y-1">
           <div className="text-sm text-muted-foreground">用户名</div>
           <div className="text-base">{session.user.name || session.user.email}</div>
         </div>
       </div>
 
-      <div className="rounded-xl border border-border/40 bg-slate-900/70 p-5">
+      <div className="rounded-xl border border-border/40 bg-white p-5">
         <h2 className="mb-3 text-lg font-medium">商家相关</h2>
         <p className="mb-4 text-sm text-muted-foreground">
           用户可申请成为商家。申请提交后立即生效（暂不需要审核）。
@@ -86,7 +86,7 @@ export default function SettingsPage() {
           onClick={() => router.push("/merchant/apply")}
           className={`rounded-lg px-4 py-2 text-sm transition-colors ${
             isMerchant
-              ? "cursor-not-allowed bg-white/[0.06] text-muted-foreground"
+              ? "cursor-not-allowed bg-slate-900/[0.06] text-muted-foreground"
               : "bg-sky-500 text-white hover:bg-sky-600"
           }`}
         >

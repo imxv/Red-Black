@@ -57,10 +57,10 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)] px-4">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(59,130,246,0.18),_transparent_55%)]" />
+    <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.15),_transparent_55%)] px-4">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(59,130,246,0.12),_transparent_55%)]" />
       
-      <Card className="w-full max-w-md border-border/50 bg-slate-900/70 backdrop-blur-lg">
+      <Card className="w-full max-w-md border-border/50 bg-white backdrop-blur-lg">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-semibold text-center">创建账户</CardTitle>
           <CardDescription className="text-center">

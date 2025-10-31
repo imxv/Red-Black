@@ -57,13 +57,13 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
     <>
       <Card
         className={cn(
-          "exposure-card relative border-border/50 bg-slate-900/70 p-6 backdrop-blur-lg",
-          "before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-gradient-to-br before:from-white/5 before:via-white/0 before:to-white/10"
+          "exposure-card relative border-border/50 bg-white p-6 backdrop-blur-lg",
+          "before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-gradient-to-br before:from-slate-900/5 before:via-slate-900/0 before:to-slate-900/10"
         )}
       >
         <CardHeader className="relative mb-4 flex items-start gap-3 p-0">
           <div className="flex items-center gap-3 pr-16">
-            <Avatar className="h-10 w-10 text-sm bg-gray-600">
+            <Avatar className="h-10 w-10 text-sm bg-slate-200">
               <AvatarFallback>{exposure.submitterAvatar}</AvatarFallback>
             </Avatar>
 
@@ -92,7 +92,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
           {exposure.images.length > 0 && (
             <div className="relative">
               <div
-                className="group relative aspect-video cursor-pointer overflow-hidden rounded-lg bg-black/20"
+                className="group relative aspect-video cursor-pointer overflow-hidden rounded-lg bg-slate-900/20"
                 onClick={() => setIsImageViewerOpen(true)}
               >
                 <img
@@ -103,14 +103,14 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
 
                 {/* 图片数量指示器 */}
                 {exposure.images.length > 1 && (
-                  <div className="absolute bottom-3 right-3 rounded-full bg-black/60 px-3 py-1 text-xs text-white backdrop-blur">
+                  <div className="absolute bottom-3 right-3 rounded-full bg-slate-900/60 px-3 py-1 text-xs text-white backdrop-blur">
                     {currentImageIndex + 1} / {exposure.images.length}
                   </div>
                 )}
 
                 {/* 放大图标提示 */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                  <div className="rounded-full bg-black/60 p-3 backdrop-blur">
+                  <div className="rounded-full bg-slate-900/60 p-3 backdrop-blur">
                     <svg
                       className="h-6 w-6 text-white"
                       fill="none"
@@ -137,7 +137,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
                       e.stopPropagation();
                       prevImage();
                     }}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/60 p-2 text-white transition-all hover:bg-black/80"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-slate-900/60 p-2 text-white transition-all hover:bg-slate-900/80"
                     aria-label="上一张"
                   >
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -151,7 +151,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
                       e.stopPropagation();
                       nextImage();
                     }}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/60 p-2 text-white transition-all hover:bg-black/80"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-slate-900/60 p-2 text-white transition-all hover:bg-slate-900/80"
                     aria-label="下一张"
                   >
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -173,7 +173,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
                   <Badge
                     key={tag}
                     variant="secondary"
-                    className="bg-white/[0.04] text-xs text-muted-foreground hover:bg-white/[0.08]"
+                    className="bg-slate-900/[0.04] text-xs text-muted-foreground hover:bg-slate-900/[0.08]"
                   >
                     #{tag}
                   </Badge>
@@ -185,7 +185,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
               <button
                 type="button"
                 onClick={handleReaction("like", onLike)}
-                className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-gray-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-slate-500 transition-colors hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/60"
                 aria-label="支持"
               >
                 <svg
@@ -207,7 +207,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
               <button
                 type="button"
                 onClick={handleReaction("dislike", onDislike)}
-                className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-gray-500 transition-colors hover:text-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                className="inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full px-2 py-1 text-slate-400 transition-colors hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/60"
                 aria-label="质疑"
               >
                 <svg
@@ -228,7 +228,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
 
               <div className="flex items-center gap-1.5">
                 <svg
-                  className="h-4 w-4 text-gray-400"
+                  className="h-4 w-4 text-slate-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -250,13 +250,13 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
       {/* 图片查看器模态框 */}
       {isImageViewerOpen && exposure.images.length > 0 && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 p-4"
           onClick={() => setIsImageViewerOpen(false)}
         >
           <button
             type="button"
             onClick={() => setIsImageViewerOpen(false)}
-            className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
+            className="absolute right-4 top-4 rounded-full bg-slate-100/10 p-2 text-white transition-colors hover:bg-slate-100/20"
             aria-label="关闭"
           >
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -276,7 +276,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
                 <button
                   type="button"
                   onClick={prevImage}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-slate-100/10 p-3 text-white transition-colors hover:bg-slate-100/20"
                   aria-label="上一张"
                 >
                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -287,7 +287,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
                 <button
                   type="button"
                   onClick={nextImage}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-slate-100/10 p-3 text-white transition-colors hover:bg-slate-100/20"
                   aria-label="下一张"
                 >
                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -295,7 +295,7 @@ export function ExposureCard({ exposure, onLike, onDislike }: ExposureCardProps)
                   </svg>
                 </button>
 
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-4 py-2 text-sm text-white backdrop-blur">
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-slate-900/60 px-4 py-2 text-sm text-white backdrop-blur">
                   {currentImageIndex + 1} / {exposure.images.length}
                 </div>
               </>

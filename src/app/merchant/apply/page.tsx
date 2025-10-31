@@ -70,14 +70,14 @@ export default function MerchantApplyPage() {
     <div className="mx-auto max-w-3xl p-6 text-foreground">
       <h1 className="mb-6 text-2xl font-semibold">申请成为商家</h1>
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="rounded-xl border border-border/40 bg-slate-900/70 p-5 space-y-4">
+        <div className="rounded-xl border border-border/40 bg-white p-5 space-y-4">
           <div>
             <label className="mb-2 block text-sm text-muted-foreground">商家名称（只读，等于用户名）</label>
             <input
               type="text"
               value={displayName}
               disabled
-              className="w-full rounded-lg border border-border/40 bg-white/[0.04] px-4 py-2.5 text-sm text-foreground"
+              className="w-full rounded-lg border border-border/40 bg-slate-900/[0.04] px-4 py-2.5 text-sm text-foreground"
             />
             <p className="mt-1 text-xs text-muted-foreground">暂不支持修改名称，将使用您的当前用户名作为商家名称</p>
           </div>
@@ -88,7 +88,7 @@ export default function MerchantApplyPage() {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="如：宠物用品、两栖爬宠、咖啡馆..."
-              className="w-full rounded-lg border border-border/40 bg-white/[0.02] px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground"
+              className="w-full rounded-lg border border-border/40 bg-slate-900/[0.02] px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground"
             />
           </div>
           <div>
@@ -98,7 +98,7 @@ export default function MerchantApplyPage() {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="如：上海 · 徐汇"
-              className="w-full rounded-lg border border-border/40 bg-white/[0.02] px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground"
+              className="w-full rounded-lg border border-border/40 bg-slate-900/[0.02] px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground"
             />
           </div>
           <div>
@@ -108,7 +108,7 @@ export default function MerchantApplyPage() {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="简要介绍商家特色、服务、优势..."
               rows={5}
-              className="w-full rounded-lg border border-border/40 bg-white/[0.02] px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground"
+              className="w-full rounded-lg border border-border/40 bg-slate-900/[0.02] px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground"
             />
           </div>
           <div>
@@ -118,7 +118,7 @@ export default function MerchantApplyPage() {
               value={highlights}
               onChange={(e) => setHighlights(e.target.value)}
               placeholder="逗号分隔，如：价格透明, 售后及时, 环境整洁"
-              className="w-full rounded-lg border border-border/40 bg-white/[0.02] px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground"
+              className="w-full rounded-lg border border-border/40 bg-slate-900/[0.02] px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground"
             />
             <p className="mt-1 text-xs text-muted-foreground">最多 8 个标签，将展示在商家卡片上</p>
           </div>
@@ -135,7 +135,7 @@ export default function MerchantApplyPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="rounded-lg border border-border/40 bg-white/[0.02] px-5 py-2 text-sm text-foreground hover:bg-white/[0.06]"
+            className="rounded-lg border border-border/40 bg-slate-900/[0.02] px-5 py-2 text-sm text-foreground hover:bg-slate-900/[0.06]"
           >
             返回
           </button>

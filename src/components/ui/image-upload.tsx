@@ -135,7 +135,7 @@ export function ImageUpload({
             "cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors",
             isDragging
               ? "border-sky-400 bg-sky-400/10"
-              : "border-border/40 bg-white/[0.02] hover:border-sky-400/50 hover:bg-white/[0.04]"
+              : "border-border/40 bg-slate-900/[0.02] hover:border-sky-400/50 hover:bg-slate-900/[0.04]"
           )}
         >
           <input
@@ -180,7 +180,7 @@ export function ImageUpload({
           {images.map((image) => (
             <div
               key={image.id}
-              className="group relative aspect-square overflow-hidden rounded-lg border border-border/40 bg-white/[0.02]"
+              className="group relative aspect-square overflow-hidden rounded-lg border border-border/40 bg-slate-900/[0.02]"
             >
               <img
                 src={image.url}
@@ -192,7 +192,7 @@ export function ImageUpload({
               <button
                 type="button"
                 onClick={() => handleRemoveImage(image.id)}
-                className="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100"
+                className="absolute right-2 top-2 rounded-full bg-slate-900/60 p-1.5 text-white opacity-0 transition-opacity hover:bg-slate-900/80 group-hover:opacity-100"
                 aria-label="删除图片"
               >
                 <svg

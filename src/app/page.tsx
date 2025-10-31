@@ -300,24 +300,24 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.03),_transparent_55%)]">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(255,255,255,0.02),_transparent_55%)]" />
+    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(30,30,30,0.03),_transparent_55%)]">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(30,30,30,0.02),_transparent_55%)]" />
 
       {/* 右上角登录/注册按钮 */}
       <div className="fixed top-6 right-6 z-50">
         {isPending ? (
-          <div className="h-10 w-24 animate-pulse rounded-full bg-white/5" />
+          <div className="h-10 w-24 animate-pulse rounded-full bg-slate-900/5" />
         ) : session?.user ? (
           <div className="relative">
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center gap-2 rounded-full border border-border/40 bg-slate-900/80 px-3 py-2 backdrop-blur-lg transition-all hover:border-white/60 hover:bg-slate-900/90"
+              className="flex items-center gap-2 rounded-full border border-border/40 bg-white/80 px-3 py-2 backdrop-blur-lg transition-all hover:border-slate-400 hover:bg-white/90"
             >
               <Avatar className="h-7 w-7">
                 {session.user.image && (
                   <AvatarImage src={session.user.image} alt={session.user.name || ""} />
                 )}
-                <AvatarFallback className="bg-gray-600 text-white text-xs">
+                <AvatarFallback className="bg-slate-200 text-slate-900 text-xs">
                   {getAvatarFallback(session.user.name, session.user.email)}
                 </AvatarFallback>
               </Avatar>
@@ -331,7 +331,7 @@ export default function Home() {
                   className="fixed inset-0 z-10"
                   onClick={() => setIsUserMenuOpen(false)}
                 />
-                <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-border/40 bg-slate-900/95 py-2 shadow-xl backdrop-blur-lg z-20">
+                <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-border/40 bg-white/95 py-2 shadow-xl backdrop-blur-lg z-20">
                   <div className="px-4 py-3 border-b border-border/40">
                     <p className="text-sm font-medium text-foreground truncate">
                       {session.user.name || "用户"}
@@ -345,7 +345,7 @@ export default function Home() {
                       setIsUserMenuOpen(false);
                       router.push("/settings");
                     }}
-                    className="w-full px-4 py-2.5 text-left text-sm text-foreground hover:bg-white/5 transition-colors"
+                    className="w-full px-4 py-2.5 text-left text-sm text-foreground hover:bg-slate-100 transition-colors"
                   >
                     个人设置
                   </button>
@@ -354,7 +354,7 @@ export default function Home() {
                       setIsUserMenuOpen(false);
                       handleSignOut();
                     }}
-                    className="w-full px-4 py-2.5 text-left text-sm text-rose-400 hover:bg-white/5 transition-colors"
+                    className="w-full px-4 py-2.5 text-left text-sm text-rose-600 hover:bg-slate-100 transition-colors"
                   >
                     退出登录
                   </button>
@@ -366,13 +366,13 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <Link
               href="/auth/signin"
-              className="rounded-full border border-border/40 bg-slate-900/80 px-5 py-2 text-sm text-foreground backdrop-blur-lg transition-all hover:border-white/60 hover:bg-slate-900/90"
+              className="rounded-full border border-border/40 bg-white/80 px-5 py-2 text-sm text-foreground backdrop-blur-lg transition-all hover:border-slate-400 hover:bg-white/90"
             >
               登录
             </Link>
             <Link
               href="/auth/signup"
-              className="rounded-full bg-white px-5 py-2 text-sm font-medium text-black transition-all hover:bg-gray-200 hover:scale-105 shadow-lg shadow-white/20"
+              className="rounded-full bg-slate-900 px-5 py-2 text-sm font-medium text-white transition-all hover:bg-slate-800 hover:scale-105 shadow-lg shadow-slate-300/50"
             >
               注册
             </Link>
@@ -400,8 +400,8 @@ export default function Home() {
               className={cn(
                 "rounded-lg px-6 py-2.5 text-sm font-medium transition-all",
                 activeSection === "merchants"
-                  ? "bg-white text-black shadow-lg shadow-white/20"
-                  : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground"
+                  ? "bg-slate-900 text-white shadow-lg shadow-slate-300/50"
+                  : "bg-slate-900/[0.04] text-muted-foreground hover:bg-slate-900/[0.08] hover:text-foreground"
               )}
             >
               <div className="flex items-center gap-2">
@@ -418,8 +418,8 @@ export default function Home() {
               className={cn(
                 "rounded-lg px-6 py-2.5 text-sm font-medium transition-all",
                 activeSection === "exposures"
-                  ? "bg-gray-700 text-white shadow-lg shadow-gray-700/30"
-                  : "bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground"
+                  ? "bg-slate-700 text-white shadow-lg shadow-slate-300/30"
+                  : "bg-slate-900/[0.04] text-muted-foreground hover:bg-slate-900/[0.08] hover:text-foreground"
               )}
             >
               <div className="flex items-center gap-2">
@@ -439,8 +439,8 @@ export default function Home() {
               <Card
                 key={merchant.name}
                 className={cn(
-                  "merchant-card relative cursor-pointer border-border/50 bg-slate-900/70 p-5 backdrop-blur-lg",
-                  "before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-gradient-to-br before:from-white/5 before:via-white/0 before:to-white/10",
+                  "merchant-card relative cursor-pointer border-border/50 bg-white p-5 backdrop-blur-lg",
+                  "before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-gradient-to-br before:from-slate-900/5 before:via-slate-900/0 before:to-slate-900/10",
                 )}
                 role="button"
                 tabIndex={0}
@@ -455,7 +455,7 @@ export default function Home() {
                 <CardHeader className="mb-4 flex flex-col gap-4">
                   <div className="flex items-center gap-4">
                     <Avatar
-                      className="h-14 w-14 text-lg bg-gray-700"
+                      className="h-14 w-14 text-lg bg-slate-200"
                     >
                       {merchant.avatarUrl ? (
                         <AvatarImage src={merchant.avatarUrl} alt={merchant.name} />
@@ -479,7 +479,7 @@ export default function Home() {
                   <RatingDisplay rating={merchant.rating} />
 
                   <div className="grid grid-cols-1 gap-3 text-sm text-foreground">
-                    <div className="rounded-2xl border border-border/40 bg-white/[0.02] p-3 backdrop-blur">
+                    <div className="rounded-2xl border border-border/40 bg-slate-900/[0.02] p-3 backdrop-blur">
                       <p className="text-xs uppercase tracking-wide text-muted-foreground">主营</p>
                       <div className="mt-2 flex items-center gap-2 overflow-hidden">
                         {mainServiceIconsToDisplay.map((icon) => (
@@ -509,10 +509,10 @@ export default function Home() {
                       onClick={handleReaction(merchant, "LIKE")}
                       disabled={merchant.userReaction === "LIKE"}
                       className={cn(
-                        "inline-flex select-none items-center gap-1 rounded-full px-2 py-1 text-gray-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
+                        "inline-flex select-none items-center gap-1 rounded-full px-2 py-1 text-slate-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                         merchant.userReaction === "LIKE"
                           ? "cursor-not-allowed opacity-50"
-                          : "cursor-pointer hover:text-white"
+                          : "cursor-pointer hover:text-slate-900"
                       )}
                       aria-label={`${merchant.name} 点赞`}
                     >
@@ -526,10 +526,10 @@ export default function Home() {
                       onClick={handleReaction(merchant, "DISLIKE")}
                       disabled={merchant.userReaction === "DISLIKE"}
                       className={cn(
-                        "inline-flex select-none items-center gap-1 rounded-full px-2 py-1 text-gray-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
+                        "inline-flex select-none items-center gap-1 rounded-full px-2 py-1 text-slate-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                         merchant.userReaction === "DISLIKE"
                           ? "cursor-not-allowed opacity-50"
-                          : "cursor-pointer hover:text-gray-300"
+                          : "cursor-pointer hover:text-slate-600"
                       )}
                       aria-label={`${merchant.name} 点踩`}
                     >
@@ -539,7 +539,7 @@ export default function Home() {
                       </span>
                     </button>
                     <div className="flex items-center gap-1">
-                      <ReviewIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />
+                      <ReviewIcon className="h-4 w-4 text-slate-400" aria-hidden="true" />
                       <span className="font-medium text-foreground">
                         {merchant.reviews.toLocaleString()} 条
                       </span>
@@ -573,7 +573,7 @@ export default function Home() {
                 ))}
               </div>
             ) : (
-              <div className="rounded-2xl border border-border/40 bg-slate-900/70 p-12 text-center backdrop-blur-lg">
+              <div className="rounded-2xl border border-border/40 bg-white p-12 text-center backdrop-blur-lg">
                 <svg
                   className="mx-auto h-16 w-16 text-muted-foreground"
                   fill="none"
@@ -599,9 +599,9 @@ export default function Home() {
               type="button"
               onClick={() => setShowExposureForm((previous) => !previous)}
               className={cn(
-                "fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
-                "shadow-xl shadow-gray-700/40",
-                "bg-gray-700 text-white hover:scale-105 hover:bg-gray-600",
+                "fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                "shadow-xl shadow-slate-300/40",
+                "bg-slate-700 text-white hover:scale-105 hover:bg-slate-600",
               )}
               aria-label={showExposureForm ? "取消提交曝光" : "提交曝光"}
             >

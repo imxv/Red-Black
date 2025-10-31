@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
-  --background: 0 0% 4%;
-  --foreground: 0 0% 100%;
-  --muted: 0 0% 63%;
-  --muted-foreground: 0 0% 63%;
-  --border: 0 0% 16%;
-  --accent: 0 0% 95%;
-  --accent-foreground: 0 0% 10%;
-  --success: 0 0% 75%;
-  --warning: 0 0% 65%;
-  --destructive: 0 0% 50%;
+  color-scheme: light;
+  --background: 0 0% 98%;
+  --foreground: 0 0% 10%;
+  --muted: 0 0% 45%;
+  --muted-foreground: 0 0% 45%;
+  --border: 0 0% 88%;
+  --accent: 0 0% 10%;
+  --accent-foreground: 0 0% 95%;
+  --success: 0 0% 35%;
+  --warning: 0 0% 40%;
+  --destructive: 0 0% 45%;
   --radius: 0.75rem;
 }
 
@@ -30,9 +30,9 @@
 @layer components {
   .rating {
     --rating-size: 1.75rem;
-    --rating-active: rgb(255 255 255 / 0.9);
-    --rating-hover: rgb(255 255 255 / 1);
-    --rating-inactive: rgb(100 100 100 / 0.45);
+    --rating-active: rgb(30 30 30 / 0.9);
+    --rating-hover: rgb(10 10 10 / 1);
+    --rating-inactive: rgb(200 200 200 / 0.5);
     display: inline-flex;
     align-items: center;
   }
@@ -71,7 +71,7 @@
   }
 
   .rating .mask:focus-visible {
-    outline: 2px solid rgb(255 255 255 / 0.5);
+    outline: 2px solid rgb(30 30 30 / 0.5);
     outline-offset: 2px;
   }
 

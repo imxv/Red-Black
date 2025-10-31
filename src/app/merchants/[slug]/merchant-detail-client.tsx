@@ -249,18 +249,18 @@ export function MerchantDetailClient({
   const dislikeCountLabel = dislikes.toLocaleString();
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.03),_transparent_55%)]">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(255,255,255,0.02),_transparent_55%)]" />
+    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(30,30,30,0.03),_transparent_55%)]">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(at_top_left,_rgba(30,30,30,0.02),_transparent_55%)]" />
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-12 pb-24 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="group inline-flex w-fit items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/70 px-4 py-2 text-sm text-slate-200 transition hover:border-white/60 hover:text-white"
+          className="group inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-foreground transition hover:border-sky-400/60 hover:text-sky-600"
         >
           <BackIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           返回榜单
         </Link>
 
-        <Card className="w-full border-border/40 bg-slate-900/70 backdrop-blur">
+        <Card className="w-full border-border/40 bg-white backdrop-blur">
           <CardHeader className="gap-6 pb-0">
             <div className="flex items-start gap-6">
               <Avatar
@@ -293,7 +293,7 @@ export function MerchantDetailClient({
 
           <CardContent className="flex flex-col gap-10 pt-8">
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="flex items-center justify-center rounded-2xl border border-border/40 bg-white/[0.02] p-6">
+              <div className="flex items-center justify-center rounded-2xl border border-border/40 bg-slate-900/[0.02] p-6">
                 <RatingDisplay
                   rating={merchant.rating}
                   reviewCount={merchant.reviews}
@@ -302,7 +302,7 @@ export function MerchantDetailClient({
                 />
               </div>
 
-              <div className="rounded-2xl border border-border/40 bg-white/[0.02] p-6">
+              <div className="rounded-2xl border border-border/40 bg-slate-900/[0.02] p-6">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">
                   我的评分
                 </p>
@@ -314,7 +314,7 @@ export function MerchantDetailClient({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-border/40 bg-white/[0.02] p-6 md:col-span-2">
+              <div className="rounded-2xl border border-border/40 bg-slate-900/[0.02] p-6 md:col-span-2">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">
                   主营
                 </p>
@@ -322,7 +322,7 @@ export function MerchantDetailClient({
                   {mainServiceIcons.map((icon) => (
                     <div
                       key={icon.src}
-                      className="flex h-11 w-11 items-center justify-center rounded-xl border border-border/30 bg-white/[0.04]"
+                      className="flex h-11 w-11 items-center justify-center rounded-xl border border-border/30 bg-slate-900/[0.04]"
                     >
                       <Image
                         src={icon.src}
@@ -352,7 +352,7 @@ export function MerchantDetailClient({
             <button
               type="button"
               onClick={handleReaction("dislikes")}
-              className="inline-flex cursor-pointer select-none items-center gap-2 rounded-full border border-gray-600/40 px-3 py-1.5 text-gray-500 transition-colors hover:border-gray-400/50 hover:text-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+              className="inline-flex cursor-pointer select-none items-center gap-2 rounded-full border border-slate-300/40 px-3 py-1.5 text-slate-400 transition-colors hover:border-slate-500/50 hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               aria-label={`${merchant.name} 点踩`}
             >
               <DislikeIcon className="h-4 w-4" aria-hidden="true" />
@@ -392,7 +392,7 @@ export function MerchantDetailClient({
                 return (
                   <Card
                     key={rating.id}
-                    className="border-border/40 bg-slate-900/60 p-4 lg:p-5 backdrop-blur"
+                    className="border-border/40 bg-white p-4 lg:p-5 backdrop-blur"
                   >
                     <CardHeader className="mb-1 gap-1.5 pb-1">
                       <div className="grid grid-cols-[auto,1fr] items-start gap-x-2 gap-y-1.5">
@@ -426,7 +426,7 @@ export function MerchantDetailClient({
                                   </svg>
                                 );
                               })}
-                                  <span className="ml-1 text-xs text-white">{rating.rating.toFixed(1)}</span>
+                                  <span className="ml-1 text-xs text-foreground">{rating.rating.toFixed(1)}</span>
                             </div>
                           </div>
                           <span className="text-xs text-muted-foreground">
@@ -445,7 +445,7 @@ export function MerchantDetailClient({
                     <CardFooter className="mt-1 w-full justify-end gap-2 border-t border-border/30 pt-2">
                         <div className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1.5">
-                          <LikeIcon className="h-3.5 w-3.5 text-gray-400" aria-hidden="true" />
+                          <LikeIcon className="h-3.5 w-3.5 text-slate-400" aria-hidden="true" />
                           <span>
                             点赞 <span className="text-foreground font-medium">{rating.likesCount.toLocaleString()}</span>
                           </span>
@@ -495,7 +495,7 @@ export function MerchantDetailClient({
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <ReviewIcon className="h-3.5 w-3.5 text-gray-400" aria-hidden="true" />
+                        <ReviewIcon className="h-3.5 w-3.5 text-slate-400" aria-hidden="true" />
                         <span>
                           回复 <span className="text-foreground font-medium">{review.replies.toLocaleString()}</span>
                         </span>
@@ -511,7 +511,7 @@ export function MerchantDetailClient({
         <button
           type="button"
           onClick={handleOpenCommentForm}
-          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-white text-black shadow-xl shadow-white/30 transition-all hover:scale-105 hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-slate-900 text-white shadow-xl shadow-slate-300/30 transition-all hover:scale-105 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
           aria-label="发表评价"
         >
           <ReviewIcon className="h-6 w-6" aria-hidden="true" />
@@ -521,7 +521,7 @@ export function MerchantDetailClient({
         {isCommentFormOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
             <div
-              className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
+              className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
               aria-hidden="true"
               onClick={handleCloseCommentForm}
             />
@@ -529,7 +529,7 @@ export function MerchantDetailClient({
             <Card
               role="dialog"
               aria-modal="true"
-              className="relative z-10 w-full max-w-lg border-border/40 bg-slate-900/90 p-2 backdrop-blur"
+              className="relative z-10 w-full max-w-lg border-border/40 bg-white p-2 backdrop-blur"
             >
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg font-semibold text-foreground">发表评价</CardTitle>
@@ -538,7 +538,7 @@ export function MerchantDetailClient({
               <form onSubmit={handleCommentSubmit} className="space-y-4 p-4 pt-0">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">
-                    评分 {userRating > 0 && <span className="text-white">({userRating.toFixed(1)} 分)</span>}
+                    评分 {userRating > 0 && <span className="text-foreground">({userRating.toFixed(1)} 分)</span>}
                   </label>
                   <div className="flex items-center gap-2">
                     <StarRatingInput value={userRating} onChange={setUserRating} />
@@ -557,7 +557,7 @@ export function MerchantDetailClient({
                     value={commentContent}
                     onChange={(event) => setCommentContent(event.target.value)}
                     placeholder="分享你的真实感受..."
-                    className="min-h-[160px] w-full resize-none rounded-lg border border-border/40 bg-slate-950/60 px-3 py-3 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:border-white/80 focus:outline-none"
+                    className="min-h-[160px] w-full resize-none rounded-lg border border-border/40 bg-slate-900/[0.02] px-3 py-3 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:border-slate-400/80 focus:outline-none"
                     required
                   />
                 </div>
