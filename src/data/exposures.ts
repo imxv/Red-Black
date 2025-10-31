@@ -1,6 +1,6 @@
 export type ExposureImage = {
   id: string;
-  url: string; // base64 data URL
+  url: string; // 远程托管 URL (Freeimage.host)
   caption?: string;
 };
 

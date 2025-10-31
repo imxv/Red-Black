@@ -9,8 +9,12 @@ import { cn } from "@/lib/utils";
 
 type ImageFile = {
   id: string;
-  url: string;
+  url: string; // 本地预览 URL (base64 或远程 URL)
   file?: File;
+  uploadStatus?: 'pending' | 'uploading' | 'success' | 'failed';
+  remoteUrl?: string; // Freeimage.host 返回的远程 URL
+  thumbnailUrl?: string; // 缩略图 URL
+  error?: string; // 上传失败时的错误信息
 };
 
 type ExposureFormProps = {
@@ -58,14 +62,35 @@ export function ExposureForm({ onSubmitSuccess }: ExposureFormProps) {
       return;
     }
 
+    // 检查图片上传状态
+    const uploadingImages = images.filter(img => img.uploadStatus === 'uploading');
+    if (uploadingImages.length > 0) {
+      alert(`还有 ${uploadingImages.length} 张图片正在上传中，请稍候或移除这些图片后再提交`);
+      return;
+    }
+
+    const failedImages = images.filter(img => img.uploadStatus === 'failed');
+    if (failedImages.length > 0) {
+      const confirmSubmit = confirm(
+        `有 ${failedImages.length} 张图片上传失败，是否移除失败的图片并继续提交？\n\n点击"确定"将移除失败图片并提交，点击"取消"可重试上传。`
+      );
+      if (!confirmSubmit) {
+        return;
+      }
+      // 移除上传失败的图片
+      setImages(images.filter(img => img.uploadStatus !== 'failed'));
+    }
+
     setIsSubmitting(true);
 
     try {
-      // 转换图片数据
-      const exposureImages: ExposureImage[] = images.map((img) => ({
-        id: img.id,
-        url: img.url,
-      }));
+      // 转换图片数据 - 只使用上传成功的图片
+      const exposureImages: ExposureImage[] = images
+        .filter(img => img.uploadStatus === 'success' && img.remoteUrl)
+        .map((img) => ({
+          id: img.id,
+          url: img.remoteUrl!, // 使用远程 URL
+        }));
 
       // 获取用户信息
       const submitterName = session.user.name || session.user.email || "匿名用户";
