@@ -23,17 +23,11 @@ import {
 import { cn } from "@/lib/utils";
 import { RatingDisplay } from "@/components/merchant/rating-display";
 import { merchants as merchantSource, type Merchant } from "@/data/merchants";
-import { mainServiceIcons } from "@/data/main-services";
 import { ExposureForm } from "@/components/exposure/exposure-form";
 import { ExposureCard } from "@/components/exposure/exposure-card";
 import { type Exposure } from "@/data/exposures";
 import { useSession, authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import Image from "next/image";
-
-const MAX_MAIN_SERVICE_ICONS = 3;
-const mainServiceIconsToDisplay = mainServiceIcons.slice(0, MAX_MAIN_SERVICE_ICONS);
-const hasExtraMainServiceIcons = mainServiceIcons.length > MAX_MAIN_SERVICE_ICONS;
 
 type IconProps = SVGProps<SVGSVGElement>;
 
@@ -538,30 +532,6 @@ export default function Home() {
 
                 <CardContent className="flex flex-col gap-4">
                   <RatingDisplay rating={merchant.rating} />
-
-                  <div className="grid grid-cols-1 gap-3 text-sm text-foreground">
-                    <div className="rounded-2xl border border-border/40 bg-slate-900/[0.02] p-3 backdrop-blur">
-                      <p className="text-xs uppercase tracking-wide text-muted-foreground">主营</p>
-                      <div className="mt-2 flex items-center gap-2 overflow-hidden">
-                        {mainServiceIconsToDisplay.map((icon) => (
-                          <div key={icon.src} className="flex flex-1 justify-center">
-                            <Image
-                              src={icon.src}
-                              alt={icon.alt}
-                              width={36}
-                              height={36}
-                              className="h-9 w-9 flex-shrink-0 object-contain"
-                            />
-                          </div>
-                        ))}
-                        {hasExtraMainServiceIcons && (
-                          <span className="flex flex-1 justify-center text-base font-medium text-muted-foreground">
-                            ...
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
                 </CardContent>
                 <CardFooter className="mt-2 border-t border-border/40 pt-4 text-sm text-muted-foreground">
                   <div className="flex w-full flex-wrap items-center gap-3">

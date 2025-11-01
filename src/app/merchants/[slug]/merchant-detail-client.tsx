@@ -10,7 +10,6 @@ import {
 } from "react";
 import { animate } from "animejs";
 import Link from "next/link";
-import Image from "next/image";
 
 import { RatingDisplay } from "@/components/merchant/rating-display";
 import { StarRatingInput } from "@/components/merchant/star-rating-input";
@@ -25,7 +24,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { Merchant } from "@/data/merchants";
-import { mainServiceIcons } from "@/data/main-services";
 import { useSession } from "@/lib/auth-client";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
@@ -311,28 +309,6 @@ export function MerchantDetailClient({
                   <p className="text-sm text-muted-foreground">
                     {userRating > 0 ? `${userRating.toFixed(1)} 分` : "点击星星为商家打分"}
                   </p>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-border/40 bg-slate-900/[0.02] p-6 md:col-span-2">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                  主营
-                </p>
-                <div className="mt-4 flex flex-wrap items-center gap-3">
-                  {mainServiceIcons.map((icon) => (
-                    <div
-                      key={icon.src}
-                      className="flex h-11 w-11 items-center justify-center rounded-xl border border-border/30 bg-slate-900/[0.04]"
-                    >
-                      <Image
-                        src={icon.src}
-                        alt={icon.alt}
-                        width={28}
-                        height={28}
-                        className="h-7 w-7 shrink-0 object-contain"
-                      />
-                    </div>
-                  ))}
                 </div>
               </div>
             </div>
